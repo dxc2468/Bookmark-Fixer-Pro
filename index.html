@@ -63,20 +63,16 @@
         .drop-zone:hover, .drop-zone.dragover { border-color: var(--accent); background: var(--accent-glow); color: var(--t2); }
         .drop-zone.has-file { border-color: var(--green); border-style: solid; background: rgba(74,222,128,.04); color: var(--green); }
 
-        /* 标签导航 */
-        .tab-bar { display: flex; border-bottom: 1px solid var(--border); margin: -28px -28px 20px; padding: 0 28px; overflow-x: auto; }
+        /* 独立稳定的导航条样式 */
+        .main-tab-bar { display: flex; border-bottom: 1px solid var(--border); margin-bottom: 20px; padding-bottom: 2px; overflow-x: auto; }
         .tab-btn {
             padding: 14px 20px; background: none; border: none; color: var(--t3); font-size: 14px; font-weight: 500;
             cursor: pointer; position: relative; transition: color .2s; display: flex; align-items: center; gap: 7px; white-space: nowrap;
         }
         .tab-btn:hover { color: var(--t2); }
         .tab-btn.active { color: var(--accent); }
-        .tab-btn.active::after { content: ''; position: absolute; bottom: -1px; left: 8px; right: 8px; height: 2px; background: var(--accent); }
+        .tab-btn.active::after { content: ''; position: absolute; bottom: -3px; left: 8px; right: 8px; height: 2px; background: var(--accent); }
         
-        .tab-content { display: none; }
-        .tab-content.active { display: block; animation: fadeUp .3s ease; }
-        @keyframes fadeUp { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
-
         /* 列表行与对比单元 */
         .list-row { display: flex; align-items: center; padding: 9px 14px; gap: 12px; border-bottom: 1px solid rgba(255,255,255,.025); font-size: 13px; transition: background .15s; }
         .list-row:hover { background: var(--s2); }
@@ -89,7 +85,7 @@
         .cmp-hd.open .chevron { transform: rotate(90deg); }
         .cmp-badge { font-size: 11px; padding: 2px 9px; border-radius: 10px; font-weight: 700; }
         
-        /* 绝对物理显隐，完美切除外层残余小滚动条，实现默认完全收缩 */
+        /* 绝对显示阻断，彻底杜绝高度塌陷和横向滚动条溢出 */
         .cmp-body { display: none; }
         .cmp-body.open { display: block; }
         
@@ -104,7 +100,7 @@
         .stat-card { background: var(--s2); border: 1px solid var(--border); border-radius: 10px; padding: 18px 14px; text-align: center; transition: transform .2s, border-color .3s; }
         .stat-card:hover { transform: translateY(-2px); border-color: #3a3a3a; }
         .stat-val { font-size: 30px; font-weight: 900; line-height: 1; margin-bottom: 4px; }
-        .stat-lbl { font-size: 12px; color: var(--t3); font-weight: 500; }
+        .stat-badge { font-size: 12px; color: var(--t3); font-weight: 500; }
 
         .preview-box { max-height: 550px; overflow-y: auto; padding-right: 6px; }
         .folder-hd { font-weight: 700; color: var(--accent); margin: 14px 0 4px; padding: 5px 10px; background: rgba(232,168,56,.07); border-radius: 5px; display: inline-block; }
@@ -150,9 +146,9 @@
         <header class="mb-6 bg-amber-500/10 border border-amber-500/20 rounded-xl p-4 flex gap-3 items-start">
             <i class="fas fa-circle-exclamation text-xl mt-0.5 text-amber-400"></i>
             <div class="text-xs text-amber-200/80 space-y-1">
-                <p class="font-bold text-amber-300 text-sm">💡 数据归档与无感局部更新系统</p>
-                <p>1. <strong>局部刷新机制（不丢内容）</strong>：修死链、删书签无需重新载入网页。点击全量重编刷新即可。</p>
-                <p>2. <strong>高选性批量回溯</strong>：【可疑链接】工作台已重构，支持打勾**部分选择或全选**，定向批量自动对齐修复。</p>
+                <p class="font-bold text-amber-300 text-sm">💡 数据归档与物理隔离安全对齐系统</p>
+                <p>1. <strong>导航条稳定机制上线</strong>：使用原生物理显隐进行选项卡彻底隔离，无论怎么点击或刷新，顶端标签导航栏都绝不会消失。</p>
+                <p>2. <strong>高选择性批量回溯</strong>：【可疑链接】面板现已支持【⚡ 批量自动修复】，勾选多条或全选即可自动秒级复活并全量刷新比对结果。</p>
             </div>
         </header>
 
@@ -188,98 +184,96 @@
                 </div>
             </section>
 
-            <section id="resultSection" class="hidden">
+            <section id="resultSection" class="hidden card" style="padding-top:20px;">
                 <div id="statsPanel" class="mb-6"></div>
 
-                <div class="card" style="padding-top:0">
-                    <div class="tab-bar">
-                        <button class="tab-btn active" data-tab="preview" onclick="switchTab('preview')">
-                            <i class="fas fa-eye"></i> 分类预览
-                        </button>
-                        <button class="tab-btn" data-tab="duplicates" onclick="switchTab('duplicates')">
-                            <i class="fas fa-clone"></i> 去重详情 <span id="dupBadge" class="tab-badge" style="display:none">0</span>
-                        </button>
-                        <button class="tab-btn" data-tab="compare" onclick="switchTab('compare')">
-                            <i class="fas fa-code-compare"></i> 对比结果 <span id="cmpBadge" class="tab-badge tab-badge-green hidden">0</span>
-                        </button>
-                        <button class="tab-btn" data-tab="suspicious" onclick="switchTab('suspicious')">
-                            <i class="fas fa-exclamation-triangle"></i> 可疑链接 <span id="suspiciousBadge" class="tab-badge" style="display:none">0</span>
-                        </button>
-                        <button class="tab-btn" data-tab="deadlinks" onclick="switchTab('deadlinks')">
-                            <i class="fas fa-plug-circle-xmark"></i> 无法访问 <span id="deadlinksBadge" class="tab-badge tab-badge-blue" style="display:none">0</span>
+                <div class="main-tab-bar">
+                    <button class="tab-btn active" data-tab="preview" onclick="switchTab('preview')">
+                        <i class="fas fa-eye"></i> 分类预览
+                    </button>
+                    <button class="tab-btn" data-tab="duplicates" onclick="switchTab('duplicates')">
+                        <i class="fas fa-clone"></i> 去重详情 <span id="dupBadge" class="tab-badge" style="display:none">0</span>
+                    </button>
+                    <button class="tab-btn" data-tab="compare" onclick="switchTab('compare')">
+                        <i class="fas fa-code-compare"></i> 对比结果 <span id="cmpBadge" class="tab-badge tab-badge-green hidden">0</span>
+                    </button>
+                    <button class="tab-btn" data-tab="suspicious" onclick="switchTab('suspicious')">
+                        <i class="fas fa-exclamation-triangle"></i> 可疑链接 <span id="suspiciousBadge" class="tab-badge" style="display:none">0</span>
+                    </button>
+                    <button class="tab-btn" data-tab="deadlinks" onclick="switchTab('deadlinks')">
+                        <i class="fas fa-plug-circle-xmark"></i> 无法访问 <span id="deadlinksBadge" class="tab-badge tab-badge-blue" style="display:none">0</span>
+                    </button>
+                </div>
+
+                <div id="tabPreview" style="display:block;" class="space-y-3">
+                    <div class="flex justify-end p-1">
+                        <button class="edit-btn edit-btn-save py-1 px-2.5 text-xs rounded-md shadow flex items-center gap-1" onclick="regenerateHtmlAndPanels(); if(oldBookmarkList.length>0) runOptimizedComparison(); showToast('中央数据树树形结构刷新对齐成功！','success');" title="微调过大类小类或增删改后，点此手动对齐重编中央数据树">
+                            <i class="fas fa-arrows-rotate"></i> 🔄 实时刷新重编最新书签树
                         </button>
                     </div>
+                    <div id="previewPanel" class="preview-box"></div>
+                </div>
 
-                    <div id="tabPreview" class="tab-content active space-y-3">
-                        <div class="flex justify-end p-1">
-                            <button class="edit-btn edit-btn-save py-1 px-2.5 text-xs rounded-md shadow flex items-center gap-1" onclick="regenerateHtmlAndPanels(); if(oldBookmarkList.length>0) runOptimizedComparison(); showToast('中央数据树树形结构刷新对齐成功！','success');" title="微调过大类小类或增删改后，点此手动对齐重编中央数据树">
-                                <i class="fas fa-arrows-rotate"></i> 🔄 实时刷新重编最新书签树
-                            </button>
+                <div id="tabDuplicates" style="display:none;">
+                    <div id="duplicatesPanel"></div>
+                </div>
+
+                <div id="tabCompare" style="display:none;">
+                    <div class="mb-5 p-4 bg-zinc-900 border border-zinc-800 rounded-xl flex flex-wrap gap-4 items-end">
+                        <div class="flex-1 min-w-[280px]">
+                            <label class="block text-xs font-bold text-amber-400 mb-2 flex items-center gap-1">
+                                <i class="fas fa-magnifying-glass"></i> 高级交叉搜索引擎:
+                            </label>
+                            <input type="text" id="cmpKeywordInput" class="w-full bg-zinc-950 border border-zinc-700 rounded-lg px-3 py-2 text-xs text-zinc-100 outline-none focus:border-amber-500 transition-all placeholder:text-zinc-600" placeholder="检索对齐集合中的站点名或网址字段..." oninput="filterComparisonView()">
                         </div>
-                        <div id="previewPanel" class="preview-box"></div>
+                        <div class="w-[180px]">
+                            <label class="block text-xs font-bold text-zinc-400 mb-2 flex items-center gap-1">
+                                <i class="fas fa-crosshairs"></i> 模糊匹配对比目标:
+                            </label>
+                            <select id="cmpMatchModeSelect" class="w-full bg-zinc-950 border border-zinc-700 rounded-lg px-2 py-2 text-xs text-zinc-100 outline-none focus:border-amber-500 transition-all cursor-pointer" onchange="runOptimizedComparison()">
+                                <option value="domain" selected>主域名对比模式 (推荐)</option>
+                                <option value="url">完整 URL 纯文本模糊分析</option>
+                            </select>
+                        </div>
+                        <div class="w-[260px]">
+                            <label class="block text-xs font-bold text-zinc-400 mb-2 flex items-center gap-1">
+                                <i class="fas fa-sliders"></i> 严格度匹配微调条: <span id="cmpScoreSliderVal" class="text-amber-400 font-extrabold ml-1">65%</span>
+                            </label>
+                            <div class="flex items-center gap-1.5 bg-zinc-950 border border-zinc-700 rounded-lg p-1">
+                                <button type="button" class="w-7 h-7 bg-zinc-800 hover:bg-zinc-700 active:scale-95 text-zinc-200 text-xs rounded font-bold border border-zinc-600 flex items-center justify-center transition-all select-none" onclick="adjustSlider(-5)">-</button>
+                                <input type="range" id="cmpScoreSlider" min="10" max="100" value="65" class="flex-1 accent-amber-500 h-1 cursor-pointer" oninput="updateSliderMetric(this.value)">
+                                <button type="button" class="w-7 h-7 bg-zinc-800 hover:bg-zinc-700 active:scale-95 text-zinc-200 text-xs rounded font-bold border border-zinc-600 flex items-center justify-center transition-all select-none" onclick="adjustSlider(5)">+</button>
+                            </div>
+                        </div>
                     </div>
+                    <div id="comparePanel"></div>
+                </div>
 
-                    <div id="tabDuplicates" class="tab-content">
-                        <div id="duplicatesPanel"></div>
+                <div id="tabSuspicious" style="display:none;">
+                    <div class="mb-4 p-3 bg-zinc-900/60 border border-zinc-800 rounded-lg flex flex-wrap items-center justify-between gap-3 text-xs">
+                        <span class="text-neutral-400 flex-1 min-w-[280px]"><i class="fas fa-circle-info text-orange-400 mr-1"></i> 工作台支持单条填入修复，更支持勾选部分条目或一键全选进行批量自动化历史对齐。</span>
+                        <div class="flex gap-2">
+                            <button class="edit-btn edit-btn-save py-1.5 px-3" onclick="executeBatchSuspiciousLookup()"><i class="fas fa-magnifying-glass"></i> 分拣并交叉追溯</button>
+                            <button class="edit-btn edit-btn-add py-1.5 px-3 bg-emerald-600/20 text-emerald-400 border border-emerald-500/30 hover:bg-emerald-600/40" onclick="executeBatchAutoFixSuspicious()"><i class="fas fa-bolt"></i> ⚡ 批量自动修复选中项</button>
+                        </div>
                     </div>
+                    <div id="suspiciousPanel"></div>
+                </div>
 
-                    <div id="tabCompare" class="tab-content">
-                        <div class="mb-5 p-4 bg-zinc-900 border border-zinc-800 rounded-xl flex flex-wrap gap-4 items-end">
-                            <div class="flex-1 min-w-[280px]">
-                                <label class="block text-xs font-bold text-amber-400 mb-2 flex items-center gap-1">
-                                    <i class="fas fa-magnifying-glass"></i> 高级交叉搜索引擎:
-                                </label>
-                                <input type="text" id="cmpKeywordInput" class="w-full bg-zinc-950 border border-zinc-700 rounded-lg px-3 py-2 text-xs text-zinc-100 outline-none focus:border-amber-500 transition-all placeholder:text-zinc-600" placeholder="检索对齐集合中的站点名或网址字段..." oninput="filterComparisonView()">
-                            </div>
-                            <div class="w-[180px]">
-                                <label class="block text-xs font-bold text-zinc-400 mb-2 flex items-center gap-1">
-                                    <i class="fas fa-crosshairs"></i> 模糊匹配对比目标:
-                                </label>
-                                <select id="cmpMatchModeSelect" class="w-full bg-zinc-950 border border-zinc-700 rounded-lg px-2 py-2 text-xs text-zinc-100 outline-none focus:border-amber-500 transition-all cursor-pointer" onchange="runOptimizedComparison()">
-                                    <option value="domain" selected>主域名对比模式 (推荐)</option>
-                                    <option value="url">完整 URL 纯文本模糊分析</option>
-                                </select>
-                            </div>
-                            <div class="w-[260px]">
-                                <label class="block text-xs font-bold text-zinc-400 mb-2 flex items-center gap-1">
-                                    <i class="fas fa-sliders"></i> 严格度匹配微调条: <span id="cmpScoreSliderVal" class="text-amber-400 font-extrabold ml-1">65%</span>
-                                </label>
-                                <div class="flex items-center gap-1.5 bg-zinc-950 border border-zinc-700 rounded-lg p-1">
-                                    <button type="button" class="w-7 h-7 bg-zinc-800 hover:bg-zinc-700 active:scale-95 text-zinc-200 text-xs rounded font-bold border border-zinc-600 flex items-center justify-center transition-all select-none" onclick="adjustSlider(-5)">-</button>
-                                    <input type="range" id="cmpScoreSlider" min="10" max="100" value="65" class="flex-1 accent-amber-500 h-1 cursor-pointer" oninput="updateSliderMetric(this.value)">
-                                    <button type="button" class="w-7 h-7 bg-zinc-800 hover:bg-zinc-700 active:scale-95 text-zinc-200 text-xs rounded font-bold border border-zinc-600 flex items-center justify-center transition-all select-none" onclick="adjustSlider(5)">+</button>
-                                </div>
-                            </div>
+                <div id="tabDeadlinks" style="display:none;">
+                    <div class="p-4 bg-zinc-900 border border-zinc-800 rounded-lg text-sm mb-4">
+                        <p class="font-bold text-orange-400 mb-1"><i class="fas fa-circle-info mr-1"></i> 连通性探测说明：</p>
+                        <p class="text-zinc-400 text-xs leading-relaxed">纯前端异步嗅探丢包探针，可以剔除那些**完全断网挂账、主站瘫痪超时或DNS解析错误**的死链，点击删除按钮可以直接剔除。</p>
+                        <div class="mt-4 flex items-center gap-3">
+                            <button id="startCheckDeadBtn" class="edit-btn edit-btn-save px-4 py-2 text-xs" onclick="startDeadLinkCheck()">开始全量探测死链</button>
+                            <span id="checkProgressText" class="text-xs text-neutral-500 hidden">准备探测中...</span>
                         </div>
-                        <div id="comparePanel"></div>
+                        <div id="progressBarContainer" class="progress-bar-container hidden">
+                            <div id="progressBarFill" class="progress-bar-fill"></div>
+                        </div>
                     </div>
-
-                    <div id="tabSuspicious" class="tab-content">
-                        <div class="mb-4 p-3 bg-zinc-900/60 border border-zinc-800 rounded-lg flex flex-wrap items-center justify-between gap-3 text-xs">
-                            <span class="text-neutral-400 flex-1 min-w-[280px]"><i class="fas fa-circle-info text-orange-400 mr-1"></i> 工作台支持单条填入修复，更支持勾选部分条目或一键全选进行批量自动化历史对齐。</span>
-                            <div class="flex gap-2">
-                                <button class="edit-btn edit-btn-save py-1.5 px-3" onclick="executeBatchSuspiciousLookup()"><i class="fas fa-magnifying-glass"></i> 分拣并交叉追溯</button>
-                                <button class="edit-btn edit-btn-add py-1.5 px-3 bg-emerald-600/20 text-emerald-400 border border-emerald-500/30 hover:bg-emerald-600/40" onclick="executeBatchAutoFixSuspicious()"><i class="fas fa-bolt"></i> ⚡ 批量自动修复选中项</button>
-                            </div>
-                        </div>
-                        <div id="suspiciousPanel"></div>
-                    </div>
-
-                    <div id="tabDeadlinks" class="tab-content">
-                        <div class="p-4 bg-zinc-900 border border-zinc-800 rounded-lg text-sm mb-4">
-                            <p class="font-bold text-orange-400 mb-1"><i class="fas fa-circle-info mr-1"></i> 连通性探测说明：</p>
-                            <p class="text-zinc-400 text-xs leading-relaxed">纯前端异步嗅探丢包探针，可以剔除那些**完全断网挂账、主站瘫痪超时或DNS解析错误**的死链，点击删除按钮可以直接剔除。</p>
-                            <div class="mt-4 flex items-center gap-3">
-                                <button id="startCheckDeadBtn" class="edit-btn edit-btn-save px-4 py-2 text-xs" onclick="startDeadLinkCheck()">开始全量探测死链</button>
-                                <span id="checkProgressText" class="text-xs text-neutral-500 hidden">准备探测中...</span>
-                            </div>
-                            <div id="progressBarContainer" class="progress-bar-container hidden">
-                                <div id="progressBarFill" class="progress-bar-fill"></div>
-                            </div>
-                        </div>
-                        <div id="deadlinksListPanel" class="scroll-y">
-                            <div class="empty"><i class="fas fa-bolt"></i><p>尚未激活网络状态检测，点击上方按钮一键开始探测</p></div>
-                        </div>
+                    <div id="deadlinksListPanel" class="scroll-y">
+                        <div class="empty"><i class="fas fa-bolt"></i><p>尚未激活网络状态检测，点击上方按钮一键开始探测</p></div>
                     </div>
                 </div>
             </section>
@@ -564,7 +558,7 @@ function processData() {
         document.getElementById("resultSection").scrollIntoView({ behavior: "smooth", block: "start" });
     }, 100);
 
-    showToast("数据重编成功，结果已全量展开！", "success");
+    showToast("前端核心分析组编排成功，结果已全量展开！", "success");
 }
 
 /* ========== 差异比对引擎与同名深度清洗拦截 ========== */
@@ -967,7 +961,6 @@ function executeBatchSuspiciousLookup() {
     showToast("交叉回溯对齐跑批完毕！", "success");
 }
 
-// ⚡ 批量自动修复勾选中的可疑项目
 function executeBatchAutoFixSuspicious() {
     if(oldBookmarkList.length === 0) return showToast("批量自动修复失败！请在右上方先导入旧备份 HTML 档案", "error");
     
@@ -1009,7 +1002,7 @@ function executeBatchAutoFixSuspicious() {
         suspiciousBookmarks = processedBookmarks.filter(b => b.isSuspicious);
         regenerateHtmlAndPanels();
         runOptimizedComparison();
-        showToast("⚡ 批量修复成功！新库与比对视图已全量刷新对齐。", "success");
+        showToast(`⚡ 批量修复成功！已自动帮您复活了选中的 ${fixSuccessCount} 个条目，比对视图已全量刷新。`, "success");
     } else {
         showToast("选中的条目未能匹配到历史旧网址，建议人工填入。", "warning");
         renderSuspiciousPanel();
@@ -1041,7 +1034,7 @@ function commitFixSuspiciousLink(uid, type) {
     showToast("节点填入修复成功！全栈比对视图已刷新。", "success");
 }
 
-/* ========== 【复活！】分类预览视图编排与在线人工增删改模块 ========== */
+/* ========== 分类预览视图编排与在线人工增删改模块 ========== */
 function renderPreview(categoryMap) {
     let html = "";
     for (const [cat, subs] of Object.entries(categoryMap)) {
@@ -1218,7 +1211,7 @@ function renderDeadlinksView() {
     const badge = document.getElementById("deadlinksBadge");
     badge.textContent = deadBookmarks.length; badge.style.display = deadBookmarks.length > 0 ? "" : "none";
     if (deadBookmarks.length === 0) {
-        listPanel.innerHTML = '<div class="empty text-emerald-400"><i class="fas fa-circle-check"></i><p>优秀！未扫描出建立物理连接超时的故障死链</p></div>';
+        listPanel.innerHTML = '<div class="empty text-emerald-400"><i class="fas fa-circle-check"></i><p>优秀！未扫描出连接故障的死链</p></div>';
     } else {
         let html = '<div class="mb-2 text-xs text-rose-400"><i class="fas fa-circle-exclamation mr-1"></i>以下节点通信失败或建立连接超时：</div>';
         deadBookmarks.forEach((db, idx) => {
@@ -1252,7 +1245,7 @@ function renderDuplicates() {
 }
 
 function renderCompareEmpty() {
-    document.getElementById("comparePanel").innerHTML = '<div class="empty text-zinc-500"><i class="fas fa-folder-tree"></i><p>请在上方装载区上传 .html 旧备份书签文件以激活差异比对面板</p></div>';
+    document.getElementById("comparePanel").innerHTML = '<div class="empty text-zinc-500"><i class="fas fa-folder-tree"></i><p>请在上方装载区上传 .html 旧备份书签文件以激活差异交叉比对视图</p></div>';
     document.getElementById("cmpBadge").classList.add("hidden");
 }
 
@@ -1264,15 +1257,27 @@ function toggleGroup(hd) {
     }
 }
 
+/* ========== 大Tab选项卡切换控制底座（原生绝对显隐物理分流） ========== */
 function switchTab(name) {
-    document.querySelectorAll(".tab-bar .tab-btn").forEach(b => {
+    // 1. 顶端导航物理样式激活
+    document.querySelectorAll(".main-tab-bar .tab-btn").forEach(b => {
         if(b.getAttribute('data-tab') === name) b.classList.add("active");
-        else b.remove("active");
+        else b.classList.remove("active");
     });
-    const contentPanels = document.querySelectorAll("#resultSection > .card > .tab-content");
-    contentPanels.forEach(c => {
-        if(c.id === "tab" + name.charAt(0).toUpperCase() + name.slice(1)) c.classList.add("active");
-        else c.classList.remove("active");
+    
+    // 2. 原生显隐直接映射控制（100%防止GitHub Pages跨域高度塌陷）
+    const tabs = ['preview', 'duplicates', 'compare', 'suspicious', 'deadlinks'];
+    tabs.forEach(t => {
+        const panel = document.getElementById('tab' + t.charAt(0).toUpperCase() + t.slice(1));
+        if (panel) {
+            if (t === name) {
+                panel.style.display = 'block';
+                panel.classList.add('active');
+            } else {
+                panel.style.display = 'none';
+                panel.classList.remove('active');
+            }
+        }
     });
 }
 
