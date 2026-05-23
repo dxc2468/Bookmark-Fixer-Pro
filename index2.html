@@ -523,10 +523,27 @@ function openAllDeadlinks() {
         showToast("没有可打开的链接", "warning");
         return;
     }
-    // 提示用户允许弹窗
-    showToast(`正在尝试打开 ${urls.length} 个链接，若被浏览器阻止请允许弹窗`, "info");
-    urls.forEach(u => {
-        window.open(u, '_blank', 'noopener,noreferrer');
+    showToast(`正在尝试依次打开 ${urls.length} 个链接，若被阻止请允许弹窗`, "info");
+
+    let openedCount = 0;
+    urls.forEach((url, idx) => {
+        setTimeout(() => {
+            const win = window.open(url, '_blank', 'noopener,noreferrer');
+            if (win) openedCount++;
+            // 最后一个链接打开后 1 秒提示结果
+            if (idx === urls.length - 1) {
+                setTimeout(() => {
+                    if (openedCount < urls.length) {
+                        showToast(
+                            `成功打开 ${openedCount} 个，剩余 ${urls.length - openedCount} 个被浏览器拦截。请点击地址栏弹窗拦截图标并允许本页面弹窗。`,
+                            "warning"
+                        );
+                    } else {
+                        showToast(`已成功打开全部 ${urls.length} 个链接`, "success");
+                    }
+                }, 1000);
+            }
+        }, idx * 400); // 间隔 400ms
     });
 }
 
