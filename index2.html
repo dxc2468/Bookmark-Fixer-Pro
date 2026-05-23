@@ -610,6 +610,8 @@
     </div>
 
     <script>
+        console.log('书签工具已启动');
+
         /* ========== 全局状态 ========== */
         let finalHtml = "";
         let processedBookmarks = [];
@@ -730,7 +732,7 @@
             });
         }
 
-        /* ========== 书签解析（新增 JSON 支持） ========== */
+        /* ========== 书签解析（支持 JSON） ========== */
         function parseBookmarkHtml(html) {
             const results = [];
             try {
@@ -776,7 +778,7 @@
                     extractBookmarks(data);
                 }
             } catch(e) {
-                // 如果JSON解析失败，静默返回空，由调用方处理
+                console.warn('JSON解析失败：', e);
             }
             return results;
         }
@@ -994,7 +996,7 @@
             // 旧独有
             html += `<div class="cmp-group"><div class="cmp-hd" onclick="toggleGroup(this)"><i class="fas fa-chevron-right chevron"></i><i class="fas fa-circle-minus text-rose-400"></i>旧备份独有 <span class="cmp-badge ml-auto bg-rose-500/10 text-rose-400">${onlyInOld.length}</span></div><div class="cmp-body">`;
             if (onlyInOld.length) {
-                html += `<div class="flex justify-between items-center p-2 bg-zinc-950"><label class="text-xs"><input type="checkbox" id="selectAllOldCheckbox" onchange="toggleSelectAllOld(this)"> 全选</label><button class="edit-btn edit-btn-add" onclick="batch挽回到新书签()">批量挽回</button><button class="edit-btn edit-btn-save" onclick="batch导出为Txt()">导出TXT</button></div>`;
+                html += `<div class="flex justify-between items-center p-2 bg-zinc-950"><label class="text-xs"><input type="checkbox" id="selectAllOldCheckbox" onchange="toggleSelectAllOld(this)"> 全选</label><button class="edit-btn edit-btn-add" onclick="batchRecoverToNew()">批量挽回</button><button class="edit-btn edit-btn-save" onclick="batchExportTxt()">导出TXT</button></div>`;
             }
             onlyInOld.forEach((ob,idx) => {
                 html += `<div class="flex items-center justify-between p-2"><input type="checkbox" name="oldUniqueCheckbox" data-title="${escapeHtml(ob.title)}" data-url="${escapeHtml(ob.url)}"><div class="flex-1 ml-2"><span class="text-zinc-300">${escapeHtml(ob.title)}</span><span class="text-zinc-500 text-xs ml-2">${escapeHtml(ob.url)}</span></div><button class="edit-btn edit-btn-add" data-title="${escapeHtml(ob.title)}" data-url="${escapeHtml(ob.url)}" onclick="manualAddToNew(this.dataset.title, this.dataset.url)">挽回</button></div>`;
@@ -1016,735 +1018,370 @@
         function getSelectedOldItems() {
             return Array.from(document.querySelectorAll('input[name="oldUniqueCheckbox"]:checked')).map(cb => ({ title: cb.dataset.title, url: cb.dataset.url }));
         }
-        function batch挽回到新书签() {
+        function batchRecoverToNew() {
             const items = getSelectedOldItems(); if (!items.length) return showToast("请勾选书签","warning");
             let added = 0;
             items.forEach(it => { if (!processedBookmarks.some(b => normalizeUrl(b.url) === normalizeUrl(it.url))) { processedBookmarks.push({ id: generateUid(), title: it.title, url: it.url, cat: "历史挽回", sub: "其他" }); added++; } });
-            regenerateizedComparison(); showToast(`HtmlAndPanels(); runOptimizedComparison(); showToast(`已添加 ${added} 已添加 ${added} 条`,"success");
+            regenerateHtmlAndPanels(); runOptimizedComparison(); showToast(`已添加 ${added} 条`,"success");
         }
-        function batch导出条`,"success");
-       为Txt }
-        function batch导出为Txt() {
-            const items() {
-            const items = getSelectedOldItems(); if = getSelectedOld (!items.lengthItems(); if (!items.length) return showToast("请) return showToast("请勾选","warning");
-           勾选 let txt = "大类,小类,","warning");
-            let txt = "大类,标题,备注,预警小类,标题,备注,预警,网址\n";
-,网址\n";
-            items.forEach(it => txt            items.forEach(it => txt += `历史备份 += `历史备份,导出,${,导出,${it.title},,it.title},,国内直连,${it国内直连,${it.url}\n`);
-.url}\n`);
-            const blob = new Bl            const blob = new Blob([txt],{type:'text/plain'});ob([txt],{type:'text/plain'}); const a = document.createElement(" const a = document.createElement("a"); a.ha"); a.href = URL.createObjectURL(blref = URL.createObjectURL(blob); a.download =ob); a.download = "old_bookmarks "old_bookmarks.txt"; a.click();.txt"; a.click(); showToast("已下载 showToast("已下载");
-        }
-
-");
+        function batchExportTxt() {
+            const items = getSelectedOldItems(); if (!items.length) return showToast("请勾选","warning");
+            let txt = "大类,小类,标题,备注,预警,网址\n";
+            items.forEach(it => txt += `历史备份,导出,${it.title},,国内直连,${it.url}\n`);
+            const blob = new Blob([txt],{type:'text/plain'}); const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "old_bookmarks.txt"; a.click(); showToast("已下载");
         }
 
         /* ========== 可疑链接面板 ========== */
-        function        /* ========== 可疑链接面板 ========== */
-        function renderSuspicious renderSuspiciousPanel() {
-            const panelPanel() {
+        function renderSuspiciousPanel() {
             const panel = document.getElementById("suspiciousPanel");
-            = document.getElementById("suspiciousPanel");
-            if (!suspiciousBook if (!suspiciousBookmarks.length) { panel.innerHTML = '<div class="emptymarks.length) { panel.innerHTML = '<div class="empty"><p>没有待"><p>没有待修复链接</p></div修复链接</p></div>'; return; }
-            const traceable = [],>'; return; }
-            untraceable = [];
-            suspicious const traceable = [], untraceable = [];
-            suspiciousBookmarks.forEach(sBookmarks.forEach(sb => {
-                const core = cleanCoreb => {
-                const core = cleanCoreName(sb.originalTitleName(sb.originalTitle);
+            if (!suspiciousBookmarks.length) { panel.innerHTML = '<div class="empty"><p>没有待修复链接</p></div>'; return; }
+            const traceable = [], untraceable = [];
+            suspiciousBookmarks.forEach(sb => {
+                const core = cleanCoreName(sb.originalTitle);
                 const matches = [];
-);
-                const matches = [];
-                if (oldBookmark                if (oldBookmarkList.length && core) {
-List.length && core) {
-                    oldBookmarkList.forEach                    oldBookmarkList.forEach(ob => { const s(ob => { const s = calculateMatchScore({title:core = calculateMatchScore({title:core,url:""},,url:""}, ob, 'domain'); if(s>= ob, 'domain'); if(s>=0.35) matches0.35) matches.push.push({({title:ob.title,title:ob.title, url:ob.url, score url:ob.url, score:s}); });
-                    matches:s}); });
-                    matches.sort((a,b)=>b.sort((a,b)=>b.score-a.score);
+                if (oldBookmarkList.length && core) {
+                    oldBookmarkList.forEach(ob => { const s = calculateMatchScore({title:core,url:""}, ob, 'domain'); if(s>=0.35) matches.push({title:ob.title, url:ob.url, score:s}); });
+                    matches.sort((a,b)=>b.score-a.score);
                 }
-.score-a.score);
-                }
-                (matches.length ? trace                (matches.length ? traceable : untraceable).push({ item: sb,able : untraceable).push({ item: sb, matches });
+                (matches.length ? traceable : untraceable).push({ item: sb, matches });
             });
-            let html = '<div class=" matches });
-            });
-            let html = '<div class="scroll-y space-y-4scroll-y space-y-4">';
-            html +=">';
-            html += `<div class="bg-zinc-900 p-3 rounded"><h4 class=" `<div class="bg-zinc-900 p-3 rounded"><h4 class="text-emerald-400 font-bold text-xs">可追溯 (${traceable.lengthtext-emerald-400 font-bold text-xs">可追溯 (${traceable.length})</h4>})</h4>`;
-            traceable.forEach(t`;
+            let html = '<div class="scroll-y space-y-4">';
+            html += `<div class="bg-zinc-900 p-3 rounded"><h4 class="text-emerald-400 font-bold text-xs">可追溯 (${traceable.length})</h4>`;
             traceable.forEach(t => {
-                html += => {
-                html += `<div class="flex items `<div class="flex items-center justify-between mt-2"><input type="checkbox"-center justify-between mt-2"><input type="checkbox" name="susp name="suspiciousiciousTraceCheckbox" data-id="${t.item.id}"><div class="TraceCheckbox" data-id="${t.item.id}"><div classflex-1 ml-="flex-1 ml-22"><span class="text-z"><span class="text-zinc-300">${escapeinc-300">${escapeHtml(t.item.Html(t.item.originalTitle)}</span>originalTitle)}</span>`;
-                html +=`;
-                html += `<select `<select id="sel_url_${t.item.id id="sel}" class="bg-zinc-800 text-xs ml-_url_${t.item.id}" class="bg-zinc-800 text-xs2">${t.m ml-2">${t.matches.map(m => `<optionatches.map(m => `<option value="${escapeHtml(m.url)}">${escapeHtml(m value="${escapeHtml(m.url)}">${escapeHtml(m.title)} (${Math.round(m.score*100)}%).title)} (${Math.round(m.score*100)}%)</option>`).join('</option>`).join('')}</select></div>')}</select></div>`;
-                html += `<button`;
-                html += `<button class="edit-btn edit class="edit-btn-btn-add" onclick="commit edit-btn-add" onclick="commitFixSuspiciousLink('${t.item.id}FixSuspiciousLink('${t','select')">修复</.item.id}button></div>`;
-           ','select')">修复</button></div>`;
+                html += `<div class="flex items-center justify-between mt-2"><input type="checkbox" name="suspiciousTraceCheckbox" data-id="${t.item.id}"><div class="flex-1 ml-2"><span class="text-zinc-300">${escapeHtml(t.item.originalTitle)}</span>`;
+                html += `<select id="sel_url_${t.item.id}" class="bg-zinc-800 text-xs ml-2">${t.matches.map(m => `<option value="${escapeHtml(m.url)}">${escapeHtml(m.title)} (${Math.round(m.score*100)}%)</option>`).join('')}</select></div>`;
+                html += `<button class="edit-btn edit-btn-add" onclick="commitFixSuspiciousLink('${t.item.id}','select')">修复</button></div>`;
             });
             html += '</div>';
-            html });
-            html += '</div += `<div class="bg-zinc->';
-            html += `<div class="bg-zinc-900 p-3 rounded900 p-3 rounded"><h4 class="text-or"><h4 class="text-orange-400 font-bold text-xs">待手动输入 (${untange-400 font-bold text-xs">待手动输入 (${untraceable.length})</hraceable.length})</h4>`;
-            untrace4>`;
+            html += `<div class="bg-zinc-900 p-3 rounded"><h4 class="text-orange-400 font-bold text-xs">待手动输入 (${untraceable.length})</h4>`;
             untraceable.forEach(sb => {
-able.forEach(sb => {
-                html += `<div class="flex items-center justify-between                html += `<div class="flex items-center justify-between mt-2"><div class mt-2"><div class="flex-1"><span="flex-1"><span class="text-zinc- class="text-zinc-300">${escapeHtml(s300">${escapeHtml(sb.originalTitle)}b.originalTitle)}</span><input id="</span><input id="input_url_${sb.id}" classinput_url_${sb.id="bg-z}" class="bg-zinc-800 text-xs mlinc-800 text-xs ml-2 w-64" placeholder="https://"></div-2 w-64" placeholder="https://"></div>`;
-                html +=>`;
-                html += `<button class="edit-btn edit-btn-s `<button class="edit-btn edit-btn-saveave"" onclick="commitFixSuspiciousLink('${sb onclick="commitFixSuspiciousLink('${sb.id}','input.id}','input')">填入</button></')">填入</button></div>`;
+                html += `<div class="flex items-center justify-between mt-2"><div class="flex-1"><span class="text-zinc-300">${escapeHtml(sb.originalTitle)}</span><input id="input_url_${sb.id}" class="bg-zinc-800 text-xs ml-2 w-64" placeholder="https://"></div>`;
+                html += `<button class="edit-btn edit-btn-save" onclick="commitFixSuspiciousLink('${sb.id}','input')">填入</button></div>`;
             });
-           div>`;
-            });
-            html += '</div></div html += '</div></div>';
-            panel.innerHTML = html>';
+            html += '</div></div>';
             panel.innerHTML = html;
-            document.getElementById(";
-            document.getElementById("suspiciousBadge").suspiciousBadge").textContent = suspiciousBooktextContent = suspiciousBookmarks.length;
+            document.getElementById("suspiciousBadge").textContent = suspiciousBookmarks.length;
         }
 
-        function executeBatchSuspiciousmarks.length;
-        }
-
-        function executeBatchSuspiciousLookup() { renderSLookup() { renderSuspiciousPanel(); showToast("已刷新uspiciousPanel(); showToast("已刷新匹配匹配"); }
-        function executeBatch"); }
+        function executeBatchSuspiciousLookup() { renderSuspiciousPanel(); showToast("已刷新匹配"); }
         function executeBatchAutoFixSuspicious() {
-            const cbs =AutoFixSuspicious() {
-            const cbs = document.querySelectorAll('input[name document.querySelectorAll('input[name="suspiciousTrace="suspiciousTraceCheckbox"]:checked');
-            if (!cbsCheckbox"]:checked');
-.length            if (!cbs.length) return showToast("请) return showToast("请勾选要修复的项目勾选要修复的项目","warning");
-            let","warning");
+            const cbs = document.querySelectorAll('input[name="suspiciousTraceCheckbox"]:checked');
+            if (!cbs.length) return showToast("请勾选要修复的项目","warning");
             let fixed = 0;
-            fixed = 0;
             cbs.forEach(cb => {
-                const uid = cb.dataset.id; cbs.forEach(cb => {
-                const uid = cb.dataset.id; const sb const sb = suspiciousBookmarks.find(b = suspiciousBookmarks.find(b=>b.id===uid);=>b.id===uid); if(!sb) return;
- if(!sb) return;
-                const matches = []; oldBookmarkList                const matches = []; oldBookmark.forEach(obList.forEach(ob => { const s = calculateMatchScore => { const s({title:clean = calculateMatchScore({title:cleanCoreName(sb.CoreName(sb.originalTitle),url:originalTitle),url:""},ob,'""},ob,'domain'); if(s>=domain'); if(s>=0.4) matches.push0.4) matches.push({url:ob.url,({url:ob.url,score:s}); });
-                ifscore:s}); });
+                const uid = cb.dataset.id; const sb = suspiciousBookmarks.find(b=>b.id===uid); if(!sb) return;
+                const matches = []; oldBookmarkList.forEach(ob => { const s = calculateMatchScore({title:cleanCoreName(sb.originalTitle),url:""},ob,'domain'); if(s>=0.4) matches.push({url:ob.url,score:s}); });
                 if (matches.length) {
-                    (matches.length) {
-                    matches.sort((a,b)=> matches.sort((a,b)=>b.score-a.score);
-                   b.score-a.score);
-                    const target = processedBookmarks.find(b=>b.id=== const target = processedBookmarks.find(b=>b.id===uid);
-                    if (targetuid);
-                    if (target) { target.url = matches) { target.url = matches[0].url; target[0].url; target.title = target.title.replace(/\[可疑链接.title = target.title.replace(/\[可疑链接已删除\]/g,"已删除\]/g,"").trim(); target.original").trim(); target.originalTitle = target.Title = target.originalTitle.replace(/\[可疑originalTitle.replace(/\[可疑链接已删除\]/g链接已删除\]/g,"").trim(); target.is,"").trim(); target.isSuspicious = false; fixed++; }
-                }
-           Suspicious = false; });
-            suspiciousBookmarks = fixed++; }
+                    matches.sort((a,b)=>b.score-a.score);
+                    const target = processedBookmarks.find(b=>b.id===uid);
+                    if (target) { target.url = matches[0].url; target.title = target.title.replace(/\[可疑链接已删除\]/g,"").trim(); target.originalTitle = target.originalTitle.replace(/\[可疑链接已删除\]/g,"").trim(); target.isSuspicious = false; fixed++; }
                 }
             });
-            suspiciousBookmarks = processedBookmarks.filter(b=> processedBookmarks.filter(b=>b.isSuspb.isSuspicious);
-            regenerateHtmlicious);
-AndPanels(); runOptim            regenerateHtmlAndPanels(); runOptimizedComparison(); showToast(`izedComparison(); showToast(`已修复已修复 ${fixed}  ${fixed} 条`,"success");
-       条`,"success");
+            suspiciousBookmarks = processedBookmarks.filter(b=>b.isSuspicious);
+            regenerateHtmlAndPanels(); runOptimizedComparison(); showToast(`已修复 ${fixed} 条`,"success");
         }
-        function commitFixSuspiciousLink(uid, }
         function commitFixSuspiciousLink(uid, type) {
-            let url type) {
-            let url = type==='select' ? document.getElementById(` = type==='select' ? document.getElementById(`sel_url_${uid}`).valuesel_url_${uid}`).value : document.getElementById(`input_url_${uid}` : document.getElementById(`input_url_${uid}`).value.trim();
-            if).value.trim();
-            if (!url) return showToast("请输入网址 (!url) return showToast("请输入网址","warning"); if","warning"); if (!url.startsWith('http')) url = 'https (!url.startsWith('http')) url = 'https://'+url;
-            const://'+url;
-            const target = processedBookmarks.find(b=>b target = processedBookmarks.find.id===uid(b=>b.id===uid); if(!target) return;
-            target); if(!target) return;
-            target.url = url.url = url; target.title = target; target.title = target.title.replace(/.title.replace(/\[可疑链接已删除\]/g,"").\[可疑链接已删除\]/g,"").trim(); target.trim(); target.originalTitle = target.originalTitle.replace(/\[可疑链接已删除\]/goriginalTitle = target.originalTitle.replace(/\[可疑链接已删除\]/g,"").trim();,"").trim(); target.isSuspicious = false;
-            suspiciousBookmarks target.isSuspicious = false;
-            suspiciousBookmarks = suspiciousBookmarks.filter(b=>b = suspiciousBookmarks.filter(b=>b.id!==uid);
-            regenerateHtml.id!==uid);
-            regenerateHtmlAndPanels(); if(oldAndPanels(); if(oldBookmarkList.length) runOptimBookmarkList.length) runOptimizedComparison(); showToastizedComparison(); showToast("("修复成功");
+            let url = type==='select' ? document.getElementById(`sel_url_${uid}`).value : document.getElementById(`input_url_${uid}`).value.trim();
+            if (!url) return showToast("请输入网址","warning"); if (!url.startsWith('http')) url = 'https://'+url;
+            const target = processedBookmarks.find(b=>b.id===uid); if(!target) return;
+            target.url = url; target.title = target.title.replace(/\[可疑链接已删除\]/g,"").trim(); target.originalTitle = target.originalTitle.replace(/\[可疑链接已删除\]/g,"").trim(); target.isSuspicious = false;
+            suspiciousBookmarks = suspiciousBookmarks.filter(b=>b.id!==uid);
+            regenerateHtmlAndPanels(); if(oldBookmarkList.length) runOptimizedComparison(); showToast("修复成功");
         }
 
-       修复成功");
-        }
-
-        /* ========== 分类 /* ========== 分类预览（含HTTP预览（含HTTP标签标签及及回收回收站操作站操作） ========== */
-       ） ========== */
+        /* ========== 分类预览（含HTTP标签及回收站操作） ========== */
         function renderPreview(categoryMap) {
-            let html function renderPreview(categoryMap) {
             let html = "";
-            = "";
-            for (const [cat, subs for (const [cat, subs] of Object.entries(c] of Object.entries(categoryMap)) {
-                htmlategoryMap)) {
-                html += '<div class="folder += '<div class="folder-hd"><i class="-hd"><i class="fas fa-folder-open mrfas fa-folder-open mr-1.5"></i-1.5"></i>' +>' + escapeHtml(cat) + '</div>';
-                escapeHtml(cat) + '</div>';
-                for (const for (const [sub, items] of Object [sub, items] of Object.entries(subs)) {
-.entries(subs)) {
-                    if (sub !== "其他" || Object.keys                    if (sub !== "其他" || Object(subs).length > .keys(subs).length > 1) html += '<div1) html += '<div class="subfolder-h class="subfolder-hd">' + escapeHtmld">' + escapeHtml(sub) + '</div>';
-(sub) + '</div>';
+            for (const [cat, subs] of Object.entries(categoryMap)) {
+                html += '<div class="folder-hd"><i class="fas fa-folder-open mr-1.5"></i>' + escapeHtml(cat) + '</div>';
+                for (const [sub, items] of Object.entries(subs)) {
+                    if (sub !== "其他" || Object.keys(subs).length > 1) html += '<div class="subfolder-hd">' + escapeHtml(sub) + '</div>';
                     items.forEach(item => {
-                        const target = processedBook                    items.forEach(item => {
-                        const target = processedBookmarks.find(b => b.urlmarks.find(b => b.url === item.u);
-                        const === item.u);
+                        const target = processedBookmarks.find(b => b.url === item.u);
                         const safeId = target ? target.id : "";
-                        const base safeId = target ? target.id : "";
-                        const baseTitle = item.t.replace(/\s*\[.+Title = item.t.replace(/\s*\[.+?\]/g, ""?\]/g, "").replace(/\s*).replace(/\s*-\s*.+$/, "").trim();
-                       -\s*.+$/, "").trim();
-                        const warningTag = (item const warningTag = (item.t.match(/\[(.t.match(/\[(国内直连|需国内直连|需翻墙|访问慢翻墙|访问慢)\]/) || [])[1] || "";
-                        const)\]/) || [])[1] || "";
+                        const baseTitle = item.t.replace(/\s*\[.+?\]/g, "").replace(/\s*-\s*.+$/, "").trim();
+                        const warningTag = (item.t.match(/\[(国内直连|需翻墙|访问慢)\]/) || [])[1] || "";
                         const isHttp = item.u.startsWith('http://');
-                        html isHttp = item.u.startsWith += `
-                           ('http://');
                         html += `
-                            <div class="bm-row" data-id <div class="bm-row" data-id="${safeId}="${safeId}">
+                            <div class="bm-row" data-id="${safeId}">
                                 <div class="flex items-center gap-2 min-w-0 flex-1">
-                                    <span class">
-                                <div class="flex items-center gap-2 min-w-0 flex-1">
-                                    <span class="bm-title truncate">="bm-title truncate">${escapeHtml(baseTitle)}${escapeHtml(baseTitle)}</span>
-                                    ${warning</span>
-                                    ${warningTag ? `<span class="Tag ? `<span class="bm-tag ${bm-tag ${warningTagwarningTag==='国内直连'==='国内直连'?'bm-tag-g?'bm-tag-g':'bm-tag-w'}':'bm-tag-w'}">${escapeHtml(warning">${escapeHtml(warningTag)}</span>` :Tag)}</span>` : ''}
-                                    ${isHttp ''}
-                                    ${isHttp ? '<span class="bm-tag-http" title ? '<span class="bm-tag="旧版HTTP网站，测-http" title="旧版HTTP网站，测活可能受限，建议手动活可能受限，建议手动点击验证">⚠️ HTTP点击验证">⚠️ HTTP</span>' : ''}
-</span>' : ''}
-                                    <span class="text-[10                                    <span class="textpx] text-z-[10px] text-zinc-600 truncate mlinc-600 truncate ml-2">(${escape-2">(${escapeHtml(item.u)Html(item.u)})</span>
-                                </})</span>
+                                    <span class="bm-title truncate">${escapeHtml(baseTitle)}</span>
+                                    ${warningTag ? `<span class="bm-tag ${warningTag==='国内直连'?'bm-tag-g':'bm-tag-w'}">${escapeHtml(warningTag)}</span>` : ''}
+                                    ${isHttp ? '<span class="bm-tag-http" title="旧版HTTP网站，测活可能受限，建议手动点击验证">⚠️ HTTP</span>' : ''}
+                                    <span class="text-[10px] text-zinc-600 truncate ml-2">(${escapeHtml(item.u)})</span>
                                 </div>
-                                <div classdiv>
                                 <div class="flex gap-1">
-="flex gap-1">
-                                    <button class="edit-btn edit                                    <button class="edit-btn edit-btn-save-btn-save text-[10px]" onclick="manualEdit text-[10px]" onclick="manualEditBookmarkFieldByBookmarkFieldByUid('${safeId}')">改分类</button>
-                                   Uid('${safeId}')">改分类</button>
-                                    <button class="edit-btn edit-btn-remove text-[10 <button class="edit-btn edit-btn-remove text-[10px]" onclick="movepx]" onclick="moveToTrash('${safeId}')">移除ToTrash('${safeId}')">移除</button>
-                                </div</button>
+                                    <button class="edit-btn edit-btn-save text-[10px]" onclick="manualEditBookmarkFieldByUid('${safeId}')">改分类</button>
+                                    <button class="edit-btn edit-btn-remove text-[10px]" onclick="moveToTrash('${safeId}')">移除</button>
                                 </div>
-                            </div>`;
-                    });
-                }
->
                             </div>`;
                     });
                 }
             }
-            document.getElementById("pre            }
-            documentviewPanel")..getElementById("previewPanel").innerHTML = htmlinnerHTML = html || || '<div class="text-zinc '<div class="text-zinc-500 text-center py-8">暂无数据</div-500 text-center py-8">暂无数据</div>';
-        }
-
-        function export>';
+            document.getElementById("previewPanel").innerHTML = html || '<div class="text-zinc-500 text-center py-8">暂无数据</div>';
         }
 
         function exportCurrentViewCSV() {
-            ifCurrentViewCSV() {
-            if (processedBookmarks.length === (processedBookmarks.length === 0) return 0) return showToast("没有书 showToast("没有书签可导出", "warning签可导出", "warning");
-            let csv = "");
-            let csv = "大类,小类,网站标题,大类,小类,网站标题,网址\n网址\n";
-            processedBook";
+            if (processedBookmarks.length === 0) return showToast("没有书签可导出", "warning");
+            let csv = "大类,小类,网站标题,网址\n";
             processedBookmarks.forEach(bm => {
-marks.forEach(bm => {
-                csv += `                csv += `"${bm.cat}","${bm.sub}"${bm.cat}","${bm.sub}","${bm.title}","","${bm.title}","${bm.url}"\${n`;
+                csv += `"${bm.cat}","${bm.sub}","${bm.title}","${bm.url}"\n`;
             });
-            constbm.url}"\n`;
-            });
-            const blob = new Blob([' blob = new Blob(['\uFEFF' +\uFEFF' + csv], {type: ' csv], {type: 'text/csv;charsettext/csv;charset=utf-8;'=utf-8;'});
-           });
-            const a const a = document.createElement(" = document.createElement("a");
-a");
-            a.href            a.href = URL.createObjectURL( = URL.createObjectURL(blob);
-            a.download =blob);
-            a.download = "当前 "当前书签视图书签视图_" + new Date().toISO_" + new Date().toISOString().slice(0,String().slice(0,10) + ".csv";
+            const blob = new Blob(['\uFEFF' + csv], {type: 'text/csv;charset=utf-8;'});
+            const a = document.createElement("a");
+            a.href = URL.createObjectURL(blob);
+            a.download = "当前书签视图_" + new Date().toISOString().slice(0,10) + ".csv";
             a.click();
-10) + ".csv";
-            a.click();
-            showToast("CS            showToast("CSV 已导出", "success");
+            showToast("CSV 已导出", "success");
         }
 
-       V 已导出", "success");
-        }
-
-        /* 回收 /* 回收站相关站相关 */
-        function move */
-        function moveToTrash(ToTrash(uid) {
-            constuid) {
-            const idx = processed idx = processedBookmarks.findIndex(b =>Bookmarks.findIndex(b => b.id === uid);
-            b.id === uid);
+        /* 回收站相关 */
+        function moveToTrash(uid) {
+            const idx = processedBookmarks.findIndex(b => b.id === uid);
             if (idx === -1) return;
-            const if (idx === -1) return;
-            const bm = processedBookmarks.s bplice(idx, 1m = processedBookmarks.splice(idx, 1)[0];
-            deletedBook)[0];
+            const bm = processedBookmarks.splice(idx, 1)[0];
             deletedBookmarks.push(bm);
-            regeneratemarks.push(bm);
-            regenerateHtmlHtmlAndPanels();
-            renderAndPanels();
+            regenerateHtmlAndPanels();
             renderTrashPanel();
-            showToastTrashPanel();
-            showToast("已移入回收站", "success("已移入回收站", "success");
+            showToast("已移入回收站", "success");
         }
 
-        function restore");
-        }
-
-        function restoreFromFromTrash(uid) {
-Trash(uid) {
-            const idx = deletedBookmarks.findIndex(b            const idx = deletedBookmarks.find => b.id === uid);
-Index(b => b.id === uid);
-            if (idx === -            if (idx === -1) return;
-            const1) return;
-            const bm = deletedBookmarks.splice(idx, 1 bm = deletedBookmarks.splice(idx, 1)[0];
-            //)[0];
-            // 检查是否重复 检查是否重复
-            if (processedBookmarks.some(b => normalize
-            if (processedBookmarks.some(b => normalizeUrl(b.url) === normalizeUrl(b.url) === normalizeUrl(bm.url))) {
-Url(bm.url))) {
-                showToast("                showToast("该书签已该书存在签已存在，无法恢复，无法恢复", "warning");
-                return", "warning");
+        function restoreFromTrash(uid) {
+            const idx = deletedBookmarks.findIndex(b => b.id === uid);
+            if (idx === -1) return;
+            const bm = deletedBookmarks.splice(idx, 1)[0];
+            if (processedBookmarks.some(b => normalizeUrl(b.url) === normalizeUrl(bm.url))) {
+                showToast("该书签已存在，无法恢复", "warning");
                 return;
             }
-            processedBook;
-            }
             processedBookmarks.push(bm);
-            regenerateHtmlmarks.push(bm);
-           AndPanels();
-            render regenerateHtmlAndPanels();
+            regenerateHtmlAndPanels();
             renderTrashPanel();
-            showTrashPanel();
             showToast("已恢复", "success");
         }
 
-       Toast("已恢复", "success");
-        }
-
-        function permanentlyDelete( function permanentlyDelete(uid) {
-            showuid) {
-            showModal('Modal确认永久删除',('确认永久删除', '此 '此操作不可撤销，确定操作不可撤销，确定要要永久删除该书永久删除该书签吗？', [
-               签吗？', [
-                { text: '取消', { text: '取消', value: false, cls: value: false, cls: 'modal-btn-cancel' 'modal-btn-cancel' },
-                { text: ' },
-                { text: '删除', value: true, cls: 'modal-btn-confirm删除', value: true, cls: 'modal-btn-confirm' }
-            ]).then' }
+        function permanentlyDelete(uid) {
+            showModal('确认永久删除', '此操作不可撤销，确定要永久删除该书签吗？', [
+                { text: '取消', value: false, cls: 'modal-btn-cancel' },
+                { text: '删除', value: true, cls: 'modal-btn-confirm' }
             ]).then(confirmed => {
-                if(confirmed => {
                 if (confirmed) {
-                    deleted (confirmed) {
-                    deletedBookmarks = deletedBookBookmarks = deletedBookmarks.filter(b => b.idmarks.filter(b => b.id !== uid);
+                    deletedBookmarks = deletedBookmarks.filter(b => b.id !== uid);
                     renderTrashPanel();
-                    showToast !== uid);
-                    renderTrashPanel();
-                    showToast("已永久删除("已永久删除", "success");
-                }
-", "success");
+                    showToast("已永久删除", "success");
                 }
             });
         }
 
-        function            });
-        }
-
-        function emptyTrash emptyTrash() {
-            if (deletedBookmarks() {
+        function emptyTrash() {
             if (deletedBookmarks.length === 0) return;
-            showModal.length === 0) return;
-            showModal('清('清空回收站', '确认空回收站', '确认清清空空所有所有回收站回收站内的书内的书签吗？此签吗操作不可恢复。？此操作不可恢复。', [
-                { text:', [
-                { text: ' '取消', value: false, cls: 'modal-btn取消', value: false, cls: 'modal-btn-cancel' },
-               -cancel' },
-                { text: '清空', { text: '清空', value: true, cls: 'modal-btn-confirm value: true, cls: 'modal-btn-confirm'' }
-            ]).then }
+            showModal('清空回收站', '确认清空所有回收站内的书签吗？此操作不可恢复。', [
+                { text: '取消', value: false, cls: 'modal-btn-cancel' },
+                { text: '清空', value: true, cls: 'modal-btn-confirm' }
             ]).then(confirmed => {
-                if (confirmed) {
-                    deleted(confirmed => {
                 if (confirmed) {
                     deletedBookmarks = [];
                     renderTrashPanel();
-                    showBookmarks = [];
-                    renderTrashPanel();
-                    showToast("回收Toast("回收站已清空", "站已清空", "success");
-                }
-            });
-success");
+                    showToast("回收站已清空", "success");
                 }
             });
         }
 
-        function renderTr        }
-
         function renderTrashPanel() {
-            constashPanel() {
             const panel = document.getElementById("trashPanel");
-            const badge = document.getElementById("tr panel = document.getElementById("trashPanel");
             const badge = document.getElementById("trashBadge");
-            badgeashBadge");
-            badge.textContent = deletedBook.textContent = deletedBookmarks.length;
-            badge.style.display = deletedBookmarks.length > 0 ? "" : "marks.length;
+            badge.textContent = deletedBookmarks.length;
             badge.style.display = deletedBookmarks.length > 0 ? "" : "none";
-            if (denone";
-            if (deletedBookmarks.length === letedBookmarks.length === 0) {
-                panel.innerHTML = '<div class="empty0) {
-                panel.innerHTML = '<div class="empty"><"><i class="fas fai class="fas fa-trash-can"></i-trash-can"></i><p>回收站为空</p></div>';
-               ><p>回收站为空</p></div>';
+            if (deletedBookmarks.length === 0) {
+                panel.innerHTML = '<div class="empty"><i class="fas fa-trash-can"></i><p>回收站为空</p></div>';
                 return;
             }
-            let return;
-            }
             let html = '';
-            deleted html = '';
             deletedBookmarks.forEach(bm => {
-                html +=Bookmarks.forEach(b `
-                    <div class="listm => {
                 html += `
                     <div class="list-row">
-                       -row">
-                        <div <div class="flex-1">
- class="flex-1">
-                            <span                            <span class="text class="text-zinc-300">${-zinc-300">${escapeHtml(bm.title)}escapeHtml(bm.title)}</span>
-                            <span</span>
-                            <span class="list class="list-url">-url">${escapeHtml(bm.url${escapeHtml(bm.url)}</span>
-                        </div>
-                        <div class)}</span>
+                        <div class="flex-1">
+                            <span class="text-zinc-300">${escapeHtml(bm.title)}</span>
+                            <span class="list-url">${escapeHtml(bm.url)}</span>
                         </div>
                         <div class="flex gap-2">
                             <button class="edit-btn edit-btn-add" onclick="restoreFromTrash('${bm.id}')">恢复</button>
-                            <button="flex gap-2">
-                            <button class="edit-btn edit-btn-add" onclick="restoreFromTrash('${bm.id}')">恢复</button>
-                            <button class="edit-btn edit-btn-remove" onclick="permanently class="edit-btn edit-btn-remove" onclick="permanentlyDelete('${bm.id}Delete('${bm.id}')">彻底删除</')">彻底删除</buttonbutton>
+                            <button class="edit-btn edit-btn-remove" onclick="permanentlyDelete('${bm.id}')">彻底删除</button>
                         </div>
                     </div>`;
             });
->
-                        </div>
-                    </div>`;
-            });
-            panel.innerHTML = html;
             panel.innerHTML = html;
         }
 
-        /* 死        }
-
-        /* 死链检测（链检测（含含进度预估进度预估） */
-        async function start） */
+        /* 死链检测（含进度预估） */
         async function startDeadLinkCheck() {
-           DeadLinkCheck() {
-            if (!processedBookmarks.length) return show if (!processedBookmarks.length) return showToast("没有Toast("没有书签可检测","warning书签可检测","warning");
-            const btn = document");
-            const btn = document.getElementById("startCheck.getElementById("startCheckDeadBtn");DeadBtn"); btn.disabled = true;
-            document.getElementById btn.disabled = true;
-            document.getElementById("("checkProgressText").classList.remove("hidden");
+            if (!processedBookmarks.length) return showToast("没有书签可检测","warning");
+            const btn = document.getElementById("startCheckDeadBtn"); btn.disabled = true;
             document.getElementById("checkProgressText").classList.remove("hidden");
-            document.getElementById("progressBarContainer").progressBarContainer").classList.remove("hidden");
-            document.getElementById("deadlinksclassList.remove("hidden");
-            document.getElementById("deadlinksListPanel").innerHTML =ListPanel").innerHTML = '<div class="empty '<div class="empty"><i class="fas fa-circle"><i class="fas fa-circle-notch fa-spin"></i>检测中...</div-notch fa-spin"></i>检测中...</div>';
-            deadBookmarks = [];
-            let checked = >';
+            document.getElementById("progressBarContainer").classList.remove("hidden");
+            document.getElementById("deadlinksListPanel").innerHTML = '<div class="empty"><i class="fas fa-circle-notch fa-spin"></i>检测中...</div>';
             deadBookmarks = [];
             let checked = 0;
             const total = processedBookmarks.length;
-           0;
-            const total = processedBookmarks.length;
-            const startTime = Date.now const startTime = Date.now();
-();
-            for (let i            for (let i = 0; i = 0; i < total; i += 8 < total; i += 8) {
-                const batch) {
+            const startTime = Date.now();
+            for (let i = 0; i < total; i += 8) {
                 const batch = processedBookmarks.slice(i, i+8);
-                = processedBookmarks.slice(i, i+8);
-                await Promise.all(b await Promise.all(batch.map(async bm =>atch.map(async bm => {
-                    if (bm.url.startsWith('about:blank')) { {
+                await Promise.all(batch.map(async bm => {
                     if (bm.url.startsWith('about:blank')) { checked++; return; }
-                    const ctrl = new Ab checked++; return; }
-                    const ctrl = new AbortController(); const timer = setTimeout(() => ctrlortController(); const timer = setTimeout(() => ctrl.abort(), 5000.abort(), 5000);
+                    const ctrl = new AbortController(); const timer = setTimeout(() => ctrl.abort(), 5000);
                     try {
-                        const);
-                    try {
-                        const res = await fetch(bm res = await fetch(bm.url, { mode: '.url, { mode: 'cors', signal: ccors', signal: ctrl.signal });
-                        iftrl.signal });
-                        if (!res.ok && res.status (!res.ok && res.status !== 0) deadBook !== 0) deadBookmarks.push(bm);
-                   marks.push(bm);
+                        const res = await fetch(bm.url, { mode: 'cors', signal: ctrl.signal });
+                        if (!res.ok && res.status !== 0) deadBookmarks.push(bm);
                     } catch(e) {
-                        } catch(e) {
-                        if (e.name === if (e.name === ' 'AbortError') deadBookAbortError') deadBookmarks.push(bm);
-                       marks.push(bm);
-                        else if (e.message?. else if (e.message?.includes('Failed to fetch')includes('Failed to fetch') && !e.message.includes('CORS')) {
-                            try && !e.message.includes('CORS')) {
+                        if (e.name === 'AbortError') deadBookmarks.push(bm);
+                        else if (e.message?.includes('Failed to fetch') && !e.message.includes('CORS')) {
                             try {
-                                const c2 = new AbortController(); const {
-                                const c2 = new AbortController(); const t2 = setTimeout(() => t2 = setTimeout(() => c2.abort(),  c2.abort(), 3000);
-                                await fetch3000);
-                                await fetch(bm.url(bm.url, { mode, { mode: 'no-cors',: 'no-cors', signal: c2.signal signal: c2.signal }); clearTimeout }); clearTimeout(t2);
-                            } catch {(t2);
-                            } catch { deadBookmarks.push(bm deadBookmarks.push(bm); }
+                                const c2 = new AbortController(); const t2 = setTimeout(() => c2.abort(), 3000);
+                                await fetch(bm.url, { mode: 'no-cors', signal: c2.signal }); clearTimeout(t2);
+                            } catch { deadBookmarks.push(bm); }
                         }
-                    }); }
-                        }
-                    } finally { clearTimeout(timer finally { clearTimeout(timer); checked++; }
-); checked++; }
+                    } finally { clearTimeout(timer); checked++; }
                 }));
-                }));
-                const                const elapsed = ( elapsed = (Date.now() - startTimeDate.now() - startTime) / 1000;
-) / 1000;
-                const speed                const speed = checked / = checked / elapsed;
-                const remaining elapsed;
-                const remaining = Math = Math.ceil((.ceil((total - checked) / speedtotal - checked) / speed);
-                document.getElementById);
-                document.getElementById("progressBarFill").style.width = (("progressBarFill").style.width = (checked/total*checked/total*100100)+)+"%";
-                document.getElementById(""%";
-                document.getElementById("checkProgressText").textContentcheckProgressText").textContent = `进度 = `进度 ${ ${checked}/${total}，checked}/${total}，预计剩余 ${预计剩余 ${remaining} 秒`;
+                const elapsed = (Date.now() - startTime) / 1000;
+                const speed = checked / elapsed;
+                const remaining = Math.ceil((total - checked) / speed);
+                document.getElementById("progressBarFill").style.width = (checked/total*100)+"%";
+                document.getElementById("checkProgressText").textContent = `进度 ${checked}/${total}，预计剩余 ${remaining} 秒`;
             }
-           remaining} 秒`;
-            }
-            document document.getElementById("checkProgressText.getElementById("checkProgressText").textContent = `完成").textContent = `完成，发现 ${deadBookmarks，发现 ${deadBookmarks.length} 个死链.length} 个死链`;
-            btn.disabled =`;
-            btn.disabled = false; btn.textContent = false; btn.textContent = "重新检测";
-            render "重新检测";
-            renderDeadlinksDeadlinksView();
+            document.getElementById("checkProgressText").textContent = `完成，发现 ${deadBookmarks.length} 个死链`;
+            btn.disabled = false; btn.textContent = "重新检测";
+            renderDeadlinksView();
         }
 
-        functionView();
-        }
-
-        function deleteFromActive deleteFromActiveBookmarks(url) {
-           Bookmarks(url) {
-            showModal('确认 showModal('确认删除', '确定删除', '确定要删除要删除该链接该链接吗？',吗？', [
-                { text: [
-                { text: '取消', value: false '取消', value: false, cls: 'modal, cls: 'modal-btn-cancel' },
-               -btn-cancel' },
-                { text: '删除', { text: '删除', value: true, cls: value: true, cls: 'modal-btn-confirm' 'modal-btn-confirm' }
-            ]).then( }
+        function deleteFromActiveBookmarks(url) {
+            showModal('确认删除', '确定要删除该链接吗？', [
+                { text: '取消', value: false, cls: 'modal-btn-cancel' },
+                { text: '删除', value: true, cls: 'modal-btn-confirm' }
             ]).then(confirmed => {
-confirmed => {
-                if (                if (confirmed) {
-                    const bconfirmed) {
-                    const bm = processedBookmarks.findm = processedBookmarks.find(b => b.url === url(b => b.url === url);
-                   );
-                    if (bm) if (bm) {
-                        processedBook {
-                        processedBookmarks = processedBookmarks.filtermarks = processedBookmarks.filter(b => b.url !==(b => b.url !== url url);
-                        deletedBookmarks.push);
+                if (confirmed) {
+                    const bm = processedBookmarks.find(b => b.url === url);
+                    if (bm) {
+                        processedBookmarks = processedBookmarks.filter(b => b.url !== url);
                         deletedBookmarks.push(bm);
-                        dead(bm);
-                        deadBookmarks = deadBookmarks = deadBookmarks.filter(b => bBookmarks.filter(b => b.url !== url);
-                        suspicious.url !== url);
-                        suspiciousBookmarks =Bookmarks = suspiciousBookmarks suspiciousBookmarks.filter(b => b.url !== url);
-                        regenerateHtml.filter(b => b.url !== url);
+                        deadBookmarks = deadBookmarks.filter(b => b.url !== url);
+                        suspiciousBookmarks = suspiciousBookmarks.filter(b => b.url !== url);
                         regenerateHtmlAndPanels();
-                        renderAndPanels();
-                        renderDeadlinksDeadlinksView();
-                        renderTrashView();
+                        renderDeadlinksView();
                         renderTrashPanel();
-                        if (oldPanel();
-                        if (oldBookmarkList.length) runBookmarkList.length) runOptimizedComparison();
-                        showOptimizedComparison();
-                        showToast("已Toast("已移入回收站移入回收站", "success");
-                    }
-", "success");
+                        if (oldBookmarkList.length) runOptimizedComparison();
+                        showToast("已移入回收站", "success");
                     }
                 }
             });
-                }
-            });
-               }
-
-        function renderDead }
+        }
 
         function renderDeadlinksView() {
-linksView() {
-            const            const panel = document.getElementById(" panel = document.getElementById("deadlinksListPanel");
-           deadlinksListPanel");
-            document.getElementById("dead document.getElementById("deadlinksBadlinksBadge").textContent = deadge").textContent = deadBookmarks.length;
-            ifBookmarks.length;
-            if (!deadBookmarks.length) (!deadBookmarks.length) { panel.innerHTML = '<div { panel.innerHTML = '<div class="empty text-em class="empty text-emerald-400"><p>erald-400"><p>未发现死链</p未发现死链</p></div>'; return;></div>'; return; }
-            let html = }
-            let html = '<div class="text-xs text '<div class="text-xs text-rose-400 mb--rose-400 mb-2">以下链接2">以下链接无法连接：</div>';
-无法连接：</div>';
-            deadBookmarks.forEach((            deadBookmarks.forEach((db, idx) => {
-db, idx) => {
-                const isHttp = db                const isHttp = db.url.url.startsWith('http://.startsWith('http://');
-               ');
-                html += `<div html += `<div class="list-row border class="list-row border-l-2-l-2 border-rose border-rose-500"><span class-500"><span class="text-zinc-600="text-zinc-600 w-6">${idx w-6">${idx+1}</span><+1}</span><divdiv class="flex-1 class="flex-1"><div class="font-bold text"><div class="font-bold text-xs">${escapeHtml(db.title)}${isHttp ?-xs">${escapeHtml(db.title)}${isHttp ? ' <span class="bm ' <span class="bm-tag-http">⚠-tag-http">⚠️ HTTP</span>' :️ HTTP</span>' : ''}</div><span ''}</div><span class="list-url class="list-url text-rose-400"> text-rose-400">${escapeHtml(db.url)}${escapeHtml(db.url)}</span></div><button</span></div><button class="edit-btn class="edit-btn edit-btn-remove" data edit-btn-remove" data-url="${escapeHtml(db-url="${escapeHtml(db.url.url)}" onclick="deleteFrom)}" onclick="deleteFromActiveBookmarks(this.datasetActiveBookmarks(this.dataset.url)">删除</button.url)">删除</button></div>`;
-            });
-            panel.innerHTML = html;
-       ></div>`;
+            const panel = document.getElementById("deadlinksListPanel");
+            document.getElementById("deadlinksBadge").textContent = deadBookmarks.length;
+            if (!deadBookmarks.length) { panel.innerHTML = '<div class="empty text-emerald-400"><p>未发现死链</p></div>'; return; }
+            let html = '<div class="text-xs text-rose-400 mb-2">以下链接无法连接：</div>';
+            deadBookmarks.forEach((db, idx) => {
+                const isHttp = db.url.startsWith('http://');
+                html += `<div class="list-row border-l-2 border-rose-500"><span class="text-zinc-600 w-6">${idx+1}</span><div class="flex-1"><div class="font-bold text-xs">${escapeHtml(db.title)}${isHttp ? ' <span class="bm-tag-http">⚠️ HTTP</span>' : ''}</div><span class="list-url text-rose-400">${escapeHtml(db.url)}</span></div><button class="edit-btn edit-btn-remove" data-url="${escapeHtml(db.url)}" onclick="deleteFromActiveBookmarks(this.dataset.url)">删除</button></div>`;
             });
             panel.innerHTML = html;
         }
 
-        /* }
-
-        /* 手动 手动编辑书编辑书签（使用签（使用自定义自定义 Modal  Modal 替换替换 prompt） */
-        function manual prompt） */
-        function manualEditBookmarkFieldByUid(uid)EditBookmarkFieldByUid(uid) {
-            const target = processedBookmarks.find(b=>b {
-            const target = processed.id===uid);
-Bookmarks.find(b=>b.id===uid);
-            if (!target)            if (! return;
+        /* 手动编辑书签（使用自定义 Modal 替换 prompt） */
+        function manualEditBookmarkFieldByUid(uid) {
+            const target = processedBookmarks.find(b=>b.id===uid);
+            if (!target) return;
             const content = `
-               target) return;
-            const content = `
-                <label <label class class="block="block text-xs mb text-xs mb-1">大类-1">大类</label>
-                <input</label>
-                <input id="edit id="editCat" class="modalCat" class="modal-input" value="${escape-input" value="${escapeHtml(target.cat)}">
-Html(target.cat)}">
-                <label class="block                <label class="block text-xs mb-1"> text-xs mb-1">小类</label>
-               小类</label>
-                <input id="editSub" class <input id="editSub" class="modal-input" value="${escapeHtml(target.sub="modal-input" value="${escapeHtml(target.sub)}">
-                <label class)}">
-                <label="block text-xs mb class-="block text-xs mb-1">标题</label>
-1">标题</label>
-                <input id="edit                <input id="editTitle" class="modal-inputTitle" class="modal-input" value="${escapeHtml(target" value="${escapeHtml(target.title)}">
+                <label class="block text-xs mb-1">大类</label>
+                <input id="editCat" class="modal-input" value="${escapeHtml(target.cat)}">
+                <label class="block text-xs mb-1">小类</label>
+                <input id="editSub" class="modal-input" value="${escapeHtml(target.sub)}">
+                <label class="block text-xs mb-1">标题</label>
+                <input id="editTitle" class="modal-input" value="${escapeHtml(target.title)}">
             `;
-.title)}">
-            `;
-            showModal('修改书签分类            showModal('修改书签分类', content, [
-', content, [
-                {                { text: '取消 text: '取消', value: false, cls: '', value: false, cls: 'modalmodal-btn-cancel' },
--btn-cancel' },
-                { text: '保存                { text: '保存', value: true, cls', value: true, cls: 'modal-btn-confirm: 'modal-btn-confirm' }
-           ' }
- ]).then            ]).then(confirmed => {
-               (confirmed => {
+            showModal('修改书签分类', content, [
+                { text: '取消', value: false, cls: 'modal-btn-cancel' },
+                { text: '保存', value: true, cls: 'modal-btn-confirm' }
+            ]).then(confirmed => {
                 if (confirmed) {
-                    if (confirmed) {
-                    target.cat = document.getElementById target.cat = document.getElementById('editCat').value.trim('editCat').value.trim() || "未分类() || "未分类";
-                    target.sub =";
-                    target.sub = document.getElementById('editSub'). document.getElementById('editSub').value.trim() || "其他value.trim() || "其他";
-                    target.title = document";
-                    target.title = document.getElementById('editTitle').value.getElementById('editTitle').value.trim() || ".trim() || "未命名";
-                    target.未命名";
+                    target.cat = document.getElementById('editCat').value.trim() || "未分类";
+                    target.sub = document.getElementById('editSub').value.trim() || "其他";
+                    target.title = document.getElementById('editTitle').value.trim() || "未命名";
                     target.originalTitle = target.title;
-originalTitle = target.title;
-                    regenerateHtml                    regenerateHtmlAndPanels();
-                    ifAndPanels();
-                    if(oldBookmark(oldBookmarkList.length) runOptimList.length) runOptimizedComparison();
-                    showToastizedComparison();
-                    showToast("分类已更新("分类已更新", "success", "success");
-                }
-            });
-       ");
+                    regenerateHtmlAndPanels();
+                    if(oldBookmarkList.length) runOptimizedComparison();
+                    showToast("分类已更新", "success");
                 }
             });
         }
 
-        function manualRemove }
+        function manualRemoveFromPreviewByUid(uid) { moveToTrash(uid); }
 
-        function manualRemoveFromPreviewFromPreviewByUidByUid(uid) {(uid) { moveToTr moveToTrash(uid); }
-
-       ash(uid); }
-
-        /* ========= /* ========== 其他辅助= 其他辅助函数 ========== */
-       函数 ========== */
-        function render function renderStats(totalStats(total, dup, cats, dup, cats, susp) {
-            document, susp) {
-            document.getElementById("statsPanel").inner.getElementById("statsPanel").innerHTML = `
-                <divHTML = `
+        /* ========== 其他辅助函数 ========== */
+        function renderStats(total, dup, cats, susp) {
+            document.getElementById("statsPanel").innerHTML = `
                 <div class="stat-grid">
-                    class="stat-grid">
-                    <div class=" <div class="stat-cardstat-card"><div class="stat-val"><div class="stat-val text-green-400">${ text-green-400">${total}</divtotal}</div><div class><div class="stat-lbl">有效="stat-lbl">有效书签</div></div书签</div></div>
-                    <div class=">
-                    <div class="stat-card"><div class="stat-card"><div class="stat-val text-rose-stat-val text-rose-400">${dup}</div400">${dup}</div><div class><div class="stat-l="stat-lbl">已去重</bl">已去重</div></divdiv></div>
-                    <div class="stat-card"><div class="stat-val>
-                    <div class="stat-card"><div class="stat-val text-amber-400">${ text-amber-400">${cats}</div><div classcats}</div><div class="stat-lbl">分类="stat-lbl">分类数</div></div>
-数</div></div>
-                    <div class="stat                    <div class="stat-card"><div class="stat-card"><div class="stat-val text-orange--val text-orange-400400">${susp}</div">${susp}</div><div class="stat-l><div class="stat-lbl">可疑项</divbl">可疑></div项</div>
-                </div></div>
+                    <div class="stat-card"><div class="stat-val text-green-400">${total}</div><div class="stat-lbl">有效书签</div></div>
+                    <div class="stat-card"><div class="stat-val text-rose-400">${dup}</div><div class="stat-lbl">已去重</div></div>
+                    <div class="stat-card"><div class="stat-val text-amber-400">${cats}</div><div class="stat-lbl">分类数</div></div>
+                    <div class="stat-card"><div class="stat-val text-orange-400">${susp}</div><div class="stat-lbl">可疑项</div></div>
                 </div>`;
         }
-        function>`;
-        }
         function renderDuplicates() {
-            renderDuplicates() {
-            const p = document.getElementById(" const p = document.getElementById("duplicatesPanel");
-            pduplicatesPanel");
-            p.innerHTML = duplicateList.length ?.innerHTML = duplicateList.length ? '<div class="scroll '<div class="scroll-y-y">'+duplicateList">'+duplicateList.map((d,i)=>`.map((d,i)=>`<div class="list-row<div class="list-row"><span>${i+"><span>${i+1}</span1}</span><span class><span class="list-url">${escape="list-url">${escapeHtml(d.url)}</spanHtml(d.url)}</span></div>`).join('></div>`).join('')+'</div>' :')+'</div>' : '<div class="empty '<div class="empty"><p>无重复网址"><p>无重复网址</p></div>';
-       </p></div>';
+            const p = document.getElementById("duplicatesPanel");
+            p.innerHTML = duplicateList.length ? '<div class="scroll-y">'+duplicateList.map((d,i)=>`<div class="list-row"><span>${i+1}</span><span class="list-url">${escapeHtml(d.url)}</span></div>`).join('')+'</div>' : '<div class="empty"><p>无重复网址</p></div>';
         }
-        function renderCompareEmpty }
-        function renderCompareEmpty() { document.getElementById("compare() { document.getElementById("comparePanel").innerHTML =Panel").innerHTML = '<div class=" '<div class="empty"><pempty"><p>请上传旧备份文件>请上传旧备份文件以启用对比</p以启用对比</p></></div>'; documentdiv>'; document.getElementById(".getElementById("cmpBadge").classListcmpBadge").classList.add("hidden"); }
-        function toggleGroup.add("hidden"); }
-       (h function toggleGroup(hd) { hdd) { hd.classList.classList.toggle("open"); h.toggle("open"); hd.nextElementSibling?.d.nextElementSibling?.classList.toggle("openclassList.toggle("open"); }
-        function switchTab"); }
+        function renderCompareEmpty() { document.getElementById("comparePanel").innerHTML = '<div class="empty"><p>请上传旧备份文件以启用对比</p></div>'; document.getElementById("cmpBadge").classList.add("hidden"); }
+        function toggleGroup(hd) { hd.classList.toggle("open"); hd.nextElementSibling?.classList.toggle("open"); }
         function switchTab(name) {
-            document.querySelector(name) {
-            document.querySelectorAll(".main-tabAll(".main-tab-bar .tab-btn").forEach-bar .tab-btn").forEach(b => b.classList.toggle(b => b.classList.toggle("active", b.dataset("active", b.dataset.tab === name));
-.tab ===            name));
-            ['preview','du ['preview','duplicates','compare','splicates','compare','suspicious','deadlinksuspicious','deadlinks','trash'].forEach(t','trash'].forEach(t => {
-                const => {
-                const panel panel = document.getElementById('tab'+ = document.getElementById('tab'+t.charAt(0).tot.charAt(0).toUpperCase()+UpperCase()+t.slice(1t.slice(1));
-                if));
-                if (panel) (panel) panel.style.display = t panel.style.display = t===name ? 'block'===name ? 'block' : 'none';
-            });
- : 'none';
+            document.querySelectorAll(".main-tab-bar .tab-btn").forEach(b => b.classList.toggle("active", b.dataset.tab === name));
+            ['preview','duplicates','compare','suspicious','deadlinks','trash'].forEach(t => {
+                const panel = document.getElementById('tab'+t.charAt(0).toUpperCase()+t.slice(1));
+                if (panel) panel.style.display = t===name ? 'block' : 'none';
             });
         }
+        function bindFileUploadEvents() {
+            const srcZ = document.getElementById("srcDropZone"), srcI = document.getElementById("txtFileInput");
+            const oldZ = document.getElementById("oldDropZone"), oldI = document.getElementById("htmlFileInput");
+            srcZ.addEventListener("click",()=>srcI.click()); srcZ.addEventListener("dragover",e=>{e.preventDefault();srcZ.classList.add("dragover")}); srcZ.addEventListener("dragleave",()=>srcZ.classList.remove("dragover")); srcZ.addEventListener("drop",e=>{e.preventDefault();srcZ.classList.remove("dragover");if(e.dataTransfer.files[0])readFile(e.dataTransfer.files[0],'src')}); srcI.addEventListener("change",()=>{if(srcI.files[0])readFile(srcI.files[0],'src')});
+            oldZ.addEventListener("click",()=>oldI.click()); oldZ.addEventListener("dragover",e=>{e.preventDefault();oldZ.classList.add("dragover")}); oldZ.addEventListener("dragleave",()=>oldZ.classList.remove("dragover")); oldZ.addEventListener("drop",e=>{e.preventDefault();oldZ.classList.remove("dragover");if(e.dataTransfer.files[0])readFile(e.dataTransfer.files[0],'old')}); oldI.addEventListener("change",()=>{if(oldI.files[0])readFile(oldI.files[0],'old')});
         }
-        function bindFile        function bindFileUploadEvents() {
-            constUploadEvents() {
-            const srcZ = document.getElementById(" srcZ = document.getElementById("srcDropZone"), srcIsrcDropZone"), srcI = document.getElementById("txt = document.getElementById("txtFileInput");
-            const oldFileInput");
-            const oldZ = document.getElementById("oldZ = document.getElementById("oldDropZone"), oldDropZone"), oldI =I = document.getElementById("htmlFileInput document.getElementById("htmlFileInput");
-            srcZ.addEventListener");
-            srcZ.addEventListener("click",()=>src("click",()=>srcI.click()); srcZ.addEventListenerI.click()); srcZ.addEventListener("dragover",("dragover",ee=>{e.preventDefault();src=>{e.preventDefault();srcZ.classList.add("dragoZ.classList.add("dragover")}); srcZ.addEventListenerver")}); srcZ.addEventListener("dragleave",("dragleave",()=>()=>srcZ.classList.remove("drasrcZ.classList.remove("dragover")); srcZgover")); srcZ.addEventListener("drop",e=>.addEventListener("drop",e=>{e.preventDefault();srcZ{e.preventDefault();srcZ.classList.remove("dragover.classList.remove("dragover");if(e.dataTransfer.f");if(e.dataTransfer.files[0])readFileiles[0])readFile(e.dataTransfer.files(e.dataTransfer.files[0],'src')});[0],'src')}); srcI.addEventListener("change", srcI.addEventListener("change",()=>{()=>{if(srcIif(srcI.files[0])read.files[0])readFile(srcI.filesFile(srcI.files[0],'src')});
-[0],'src            oldZ.addEventListener("click')});
-            oldZ.addEventListener("click",()=>oldI.click",()=>oldI.click()); oldZ.addEventListener("dra()); oldZ.addEventListener("dragover",e=>{gover",e=>{e.preventDefault();oldZ.classListe.preventDefault();oldZ.classList.add("dragover").add("dragover")}); oldZ.addEventListener("drag}); oldZ.addEventListener("dragleave",()=>oldZleave",()=>old.classList.remove("dragoverZ.classList.remove("dragover")); oldZ.addEventListener("")); oldZ.addEventListener("drop",e=>{edrop.preventDefault();oldZ.classList.remove",e=>{e.preventDefault();oldZ.classList.remove("drago("dragover");ifver");if(e.dataTransfer.files(e.dataTransfer.files[0])read[0])readFile(eFile(e.dataTransfer.files[0.dataTransfer.files[0],'old')}); old],'old')}); oldI.addEventListenerI.addEventListener("change",()("change",()=>{if(oldI.f=>{if(oldI.files[0])readFileiles[0])readFile(oldI.files[0(oldI.files[0],'old')});
-       ],'old')});
-        }
-        function readFile(file }
         function readFile(file, type) {
-            const, type) {
-            const reader = reader = new FileReader();
- new FileReader();
-            reader.onload = e            reader.onload = e => {
-                const content => {
+            const reader = new FileReader();
+            reader.onload = e => {
                 const content = e.target.result;
-                = e.target.result;
-                if (type === ' if (type === 'src') {
-                    documentsrc') {
-                    document.getElementById("rawText.getElementById("rawTextArea").value = content;
-Area").value = content;
-                    document.getElementById("src                    document.getElementById("srcDropDropZone").classList.add("Zone").classList.add("has-file");
-                    showToasthas-file");
-                    showToast("新文件("新文件已加载");
-                } else已加载");
+                if (type === 'src') {
+                    document.getElementById("rawTextArea").value = content;
+                    document.getElementById("srcDropZone").classList.add("has-file");
+                    showToast("新文件已加载");
                 } else {
-                    // {
-                    // 根据 根据扩展扩展名或名或内容判断内容判断格式格式
-                    if (
-                    if (file.name.endsWith('.file.name.endsWith('.json') || (json') || (content.trim().content.trim().startsWith('{')startsWith('{') && content.trim(). && content.trim().endsendsWith('}')))With('}'))) {
-                        const {
-                        const json jsonBookmarks = parseBookmarkBookmarks = parseBookmarkJson(content);
-                        if (Json(content);
+                    if (file.name.endsWith('.json') || (content.trim().startsWith('{') && content.trim().endsWith('}'))) {
+                        const jsonBookmarks = parseBookmarkJson(content);
                         if (jsonBookmarks.length) {
-jsonBookmarks.length) {
-                                                       oldBookmark oldBookmarkList = jsonBookmarks;
-List = jsonBookmarks;
-                            document.getElementById("oldDrop                            document.getElementById("oldDropZone").classList.add("Zone").classhas-file");
-                            showToastList.add("has-file");
-                            showToast(`JSON(`JSON 书 书签已加载 (${签已加载 (${oldBookmarkoldBookmarkList.lengthList.length}条)`);
-}条)`);
-                        }                        } else {
-                            showToast(" else {
-                            showToast("未能未能解析JSON解析JSON中的中的书签",书签", "error "error");
-                        }
-                    } else");
+                            oldBookmarkList = jsonBookmarks;
+                            document.getElementById("oldDropZone").classList.add("has-file");
+                            showToast(`JSON 书签已加载 (${oldBookmarkList.length}条)`);
+                        } else {
+                            showToast("未能解析JSON中的书签", "error");
                         }
                     } else {
-                        {
-                        oldBookmark oldBookmarkList =List = parseBookmark parseBookmarkHtml(contentHtml(content);
-                        document.getElementById("old);
-                        document.getElementById("oldDropZone").classList.addDropZone").classList.add("has-file");
-                        show("has-file");
-                        showToast(`HTML Toast(`HTML 书签已加载 (${书签已加载 (${oldBookmarkList.length}oldBookmarkList.length}条条)`);
+                        oldBookmarkList = parseBookmarkHtml(content);
+                        document.getElementById("oldDropZone").classList.add("has-file");
+                        showToast(`HTML 书签已加载 (${oldBookmarkList.length}条)`);
                     }
-                   )`);
-                    }
-                    if (processedBookmarks.length if (processedBookmarks.length) runOptim) runOptimizedComparison();
-                }
-           izedComparison();
+                    if (processedBookmarks.length) runOptimizedComparison();
                 }
             };
-            reader.readAsText };
             reader.readAsText(file);
         }
-        function(file);
-        }
         function downloadResult() {
-            if downloadResult() {
-            if (!processedBookmarks.length) (!processedBookmarks.length) return showToast("无 return showToast("无书签可下载","warning书签可下载","warning");
-            const tree = {}");
-            const tree = {}; processedBookmarks.forEach(b; processedBookmarks.forEach(b => { if(! => { if(!tree[b.cattree[b.cat])]) tree[b.cat] tree[b.cat]={}; if(!tree[b={}; if(!tree[b.cat][.cat][b.subb.sub]) tree[b.c]) tree[b.cat][b.sub]=[]; tree[b.cat][b.subat][b.sub]=[]; tree[b.cat][b.sub].push(b);].push(b); });
-            let h = });
-            let h = '<!DOCTYPE NETSCAPE-Book '<!DOCTYPE NETSCAPE-Bookmark-file-1mark-file-1>\n>\n<META HTTP<META HTTP-EQUIV="Content-Type" CONT-EQUIV="Content-Type" CONTENT="text/html; charsetENT="text/html; charset=UTF-8">\n<TITLE>Book=UTF-8">\n<TITLE>Bookmarks</TITLE>\nmarks</TITLE>\n<H1>Bookmarks<H1>Bookmarks</H1>\n<DL><p>\n';
-</H1>\n<DL><p>\n';
-            for (let cat in tree) { h            for (let cat in tree) { h += '    <DT><H3>'+escapeHtml(cat)+ += '    <DT><H3>'+escapeHtml(cat)+'</H3>\n   '</H3>\n    <DL><p>\n'; for (let sub in tree[cat]) { h += '        <DT><H3>'+escapeHtml <DL><p>\n'; for (let sub in tree[cat]) { h += '        <DT><H3>'+escapeHtml(sub)+'</H3>\n       (sub)+'</H3>\n        <DL><p>\n'; tree[cat][sub <DL><p>\n'; tree[cat][sub].forEach(bm => h += '           ].forEach(bm => h += '            <DT><A <DT><A HREF="'+escapeHtml HREF="'+escapeHtml(bm.url)+'">(bm.url)+'">'+escapeHtml(bm.title'+escapeHtml(bm.title)+'</A>\)+'</A>\n'); h += '        </DL><p>\nn'); h += '        </DL><p>\n'; } h += '   '; } h += '    </DL><p>\n </DL><p>\n'; } h += '</DL><p>';
-           '; } h += '</DL><p>';
-            const blob = new Blob([h],{type:'text/html'}); const a const blob = new Blob([h],{type:'text/html'}); const a = document.createElement("a"); = document.createElement("a"); a.href = URL a.href = URL.createObjectURL(blob);.createObjectURL(blob); a.download = "bookmarks_fixed.html a.download = "bookmarks_fixed.html"; a"; a.click(); showToast("下载完成");
+            if (!processedBookmarks.length) return showToast("无书签可下载","warning");
+            const tree = {}; processedBookmarks.forEach(b => { if(!tree[b.cat]) tree[b.cat]={}; if(!tree[b.cat][b.sub]) tree[b.cat][b.sub]=[]; tree[b.cat][b.sub].push(b); });
+            let h = '<!DOCTYPE NETSCAPE-Bookmark-file-1>\n<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8">\n<TITLE>Bookmarks</TITLE>\n<H1>Bookmarks</H1>\n<DL><p>\n';
+            for (let cat in tree) { h += '    <DT><H3>'+escapeHtml(cat)+'</H3>\n    <DL><p>\n'; for (let sub in tree[cat]) { h += '        <DT><H3>'+escapeHtml(sub)+'</H3>\n        <DL><p>\n'; tree[cat][sub].forEach(bm => h += '            <DT><A HREF="'+escapeHtml(bm.url)+'">'+escapeHtml(bm.title)+'</A>\n'); h += '        </DL><p>\n'; } h += '    </DL><p>\n'; } h += '</DL><p>';
+            const blob = new Blob([h],{type:'text/html'}); const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "bookmarks_fixed.html"; a.click(); showToast("下载完成");
         }
-        document.click(); showToast("下载完成");
-        }
-        document.addEventListener("DOMContentLoaded",.addEventListener("DOMContentLoaded", bindFileUpload bindFileUploadEvents);
-    </script>
-Events);
+        document.addEventListener("DOMContentLoaded", bindFileUploadEvents);
     </script>
 </body>
 </html>
