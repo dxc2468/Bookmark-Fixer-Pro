@@ -18,7 +18,6 @@
         }
     </script>
     <style>
-        /* 样式保持不变 */
         :root {
             --accent: #e8a838;
             --accent-hover: #d4942a;
@@ -67,22 +66,12 @@
             animation: oF2 28s ease-in-out infinite;
         }
         @keyframes oF1 {
-            0%,
-            100% {
-                transform: translate(0, 0)
-            }
-            50% {
-                transform: translate(90px, 130px)
-            }
+            0%, 100% { transform: translate(0,0) }
+            50% { transform: translate(90px,130px) }
         }
         @keyframes oF2 {
-            0%,
-            100% {
-                transform: translate(0, 0)
-            }
-            50% {
-                transform: translate(-100px, -70px)
-            }
+            0%,100% { transform: translate(0,0) }
+            50% { transform: translate(-100px,-70px) }
         }
         .card {
             background: var(--s1);
@@ -92,9 +81,7 @@
             transition: border-color .3s;
             position: relative;
         }
-        .card:hover {
-            border-color: #333;
-        }
+        .card:hover { border-color: #333; }
         textarea {
             width: 100%;
             height: 220px;
@@ -103,7 +90,7 @@
             border: 1px solid var(--border);
             border-radius: 8px;
             color: var(--t1);
-            font-family: "Cascadia Code", "Fira Code", monospace;
+            font-family: "Cascadia Code","Fira Code",monospace;
             font-size: 13px;
             line-height: 1.6;
             resize: vertical;
@@ -126,24 +113,11 @@
             cursor: pointer;
             transition: all .2s;
         }
-        .btn:active {
-            transform: scale(.97);
-        }
-        .btn-primary {
-            background: var(--accent);
-            color: #0a0a0a;
-        }
-        .btn-primary:hover {
-            background: var(--accent-hover);
-            box-shadow: 0 4px 24px var(--accent-glow);
-        }
-        .btn-success {
-            background: #16a34a;
-            color: #fff;
-        }
-        .btn-success:hover {
-            background: #15803d;
-        }
+        .btn:active { transform: scale(.97); }
+        .btn-primary { background: var(--accent); color: #0a0a0a; }
+        .btn-primary:hover { background: var(--accent-hover); box-shadow: 0 4px 24px var(--accent-glow); }
+        .btn-success { background: #16a34a; color: #fff; }
+        .btn-success:hover { background: #15803d; }
         .drop-zone {
             border: 2px dashed var(--border);
             border-radius: 10px;
@@ -152,20 +126,9 @@
             color: var(--t3);
             cursor: pointer;
             transition: all .3s;
-            position: relative;
         }
-        .drop-zone:hover,
-        .drop-zone.dragover {
-            border-color: var(--accent);
-            background: var(--accent-glow);
-            color: var(--t2);
-        }
-        .drop-zone.has-file {
-            border-color: var(--green);
-            border-style: solid;
-            background: rgba(74, 222, 128, .04);
-            color: var(--green);
-        }
+        .drop-zone:hover, .drop-zone.dragover { border-color: var(--accent); background: var(--accent-glow); color: var(--t2); }
+        .drop-zone.has-file { border-color: var(--green); border-style: solid; background: rgba(74,222,128,.04); color: var(--green); }
         .main-tab-bar {
             display: flex;
             border-bottom: 1px solid var(--border);
@@ -188,12 +151,8 @@
             gap: 7px;
             white-space: nowrap;
         }
-        .tab-btn:hover {
-            color: var(--t2);
-        }
-        .tab-btn.active {
-            color: var(--accent);
-        }
+        .tab-btn:hover { color: var(--t2); }
+        .tab-btn.active { color: var(--accent); }
         .tab-btn.active::after {
             content: '';
             position: absolute;
@@ -208,13 +167,11 @@
             align-items: center;
             padding: 9px 14px;
             gap: 12px;
-            border-bottom: 1px solid rgba(255, 255, 255, .025);
+            border-bottom: 1px solid rgba(255,255,255,.025);
             font-size: 13px;
             transition: background .15s;
         }
-        .list-row:hover {
-            background: var(--s2);
-        }
+        .list-row:hover { background: var(--s2); }
         .list-url {
             color: var(--accent);
             font-family: monospace;
@@ -223,9 +180,7 @@
             flex: 1;
             min-width: 0;
         }
-        .cmp-group {
-            margin-bottom: 14px;
-        }
+        .cmp-group { margin-bottom: 14px; }
         .cmp-hd {
             display: flex;
             align-items: center;
@@ -239,41 +194,31 @@
             transition: background .2s;
             user-select: none;
         }
-        .cmp-hd:hover {
-            background: var(--s3);
-        }
+        .cmp-hd:hover { background: var(--s3); }
         .cmp-hd .chevron {
             transition: transform 0.2s ease;
             font-size: 12px;
             color: var(--t3);
         }
-        .cmp-hd.open .chevron {
-            transform: rotate(90deg);
-        }
+        .cmp-hd.open .chevron { transform: rotate(90deg); }
         .cmp-badge {
             font-size: 11px;
             padding: 2px 9px;
             border-radius: 10px;
             font-weight: 700;
         }
-        .cmp-body {
-            display: none;
-        }
-        .cmp-body.open {
-            display: block;
-        }
+        .cmp-body { display: none; }
+        .cmp-body.open { display: block; }
         .cmp-item {
             display: flex;
             align-items: flex-start;
             padding: 12px 16px;
             gap: 12px;
-            border-bottom: 1px solid rgba(255, 255, 255, .02);
+            border-bottom: 1px solid rgba(255,255,255,.02);
             font-size: 13px;
             flex-wrap: wrap;
         }
-        .cmp-item:hover {
-            background: rgba(255, 255, 255, .015);
-        }
+        .cmp-item:hover { background: rgba(255,255,255,.015); }
         .sim-tag {
             font-size: 10px;
             padding: 2px 7px;
@@ -281,17 +226,11 @@
             font-weight: 700;
             white-space: nowrap;
         }
-        .sim-high {
-            background: rgba(74, 222, 128, .12);
-            color: var(--green);
-        }
-        .sim-mid {
-            background: rgba(251, 146, 60, .12);
-            color: var(--orange);
-        }
+        .sim-high { background: rgba(74,222,128,.12); color: var(--green); }
+        .sim-mid { background: rgba(251,146,60,.12); color: var(--orange); }
         .stat-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(130px,1fr));
             gap: 10px;
         }
         .stat-card {
@@ -302,32 +241,16 @@
             text-align: center;
             transition: transform .2s, border-color .3s;
         }
-        .stat-card:hover {
-            transform: translateY(-2px);
-            border-color: #3a3a3a;
-        }
-        .stat-val {
-            font-size: 30px;
-            font-weight: 900;
-            line-height: 1;
-            margin-bottom: 4px;
-        }
-        .stat-badge {
-            font-size: 12px;
-            color: var(--t3);
-            font-weight: 500;
-        }
-        .preview-box {
-            max-height: 550px;
-            overflow-y: auto;
-            padding-right: 6px;
-        }
+        .stat-card:hover { transform: translateY(-2px); border-color: #3a3a3a; }
+        .stat-val { font-size: 30px; font-weight: 900; line-height: 1; margin-bottom: 4px; }
+        .stat-badge { font-size: 12px; color: var(--t3); font-weight: 500; }
+        .preview-box { max-height: 550px; overflow-y: auto; padding-right: 6px; }
         .folder-hd {
             font-weight: 700;
             color: var(--accent);
             margin: 14px 0 4px;
             padding: 5px 10px;
-            background: rgba(232, 168, 56, .07);
+            background: rgba(232,168,56,.07);
             border-radius: 5px;
             display: inline-block;
         }
@@ -340,7 +263,7 @@
         .bm-row {
             margin-left: 44px;
             padding: 6px 12px;
-            border-bottom: 1px solid rgba(255, 255, 255, .025);
+            border-bottom: 1px solid rgba(255,255,255,.025);
             font-size: 13px;
             display: flex;
             align-items: center;
@@ -349,30 +272,18 @@
             flex-wrap: wrap;
             transition: background 0.15s;
         }
-        .bm-row:hover {
-            background: rgba(255, 255, 255, 0.02);
-        }
-        .bm-title {
-            color: var(--t1);
-            font-weight: 500;
-        }
+        .bm-row:hover { background: rgba(255,255,255,0.02); }
+        .bm-title { color: var(--t1); font-weight: 500; }
         .bm-tag {
             font-size: 10px;
             padding: 1px 6px;
             border-radius: 3px;
             font-weight: 600;
         }
-        .bm-tag-w {
-            background: rgba(251, 146, 60, .12);
-            color: var(--orange);
-        }
-        .bm-tag-g {
-            background: rgba(74, 222, 128, .12);
-            color: var(--green);
-        }
-        /* HTTP 警告标签专用样式 */
+        .bm-tag-w { background: rgba(251,146,60,.12); color: var(--orange); }
+        .bm-tag-g { background: rgba(74,222,128,.12); color: var(--green); }
         .bm-tag-http {
-            background: rgba(248, 113, 113, .15);
+            background: rgba(248,113,113,.15);
             color: #fca5a5;
             font-size: 10px;
             padding: 2px 8px;
@@ -380,19 +291,10 @@
             font-weight: 600;
             white-space: nowrap;
             cursor: help;
-            border: 1px solid rgba(248, 113, 113, 0.3);
+            border: 1px solid rgba(248,113,113,0.3);
         }
-        .empty {
-            text-align: center;
-            padding: 50px 20px;
-            color: var(--t3);
-        }
-        .empty i {
-            font-size: 42px;
-            margin-bottom: 14px;
-            display: block;
-            opacity: .4;
-        }
+        .empty { text-align: center; padding: 50px 20px; color: var(--t3); }
+        .empty i { font-size: 42px; margin-bottom: 14px; display: block; opacity: .4; }
         #toastBox {
             position: fixed;
             top: 20px;
@@ -412,37 +314,20 @@
             background: #333;
             border-left: 4px solid var(--accent);
         }
-        .toast.show {
-            transform: translateX(0);
-        }
-        .toast-success {
-            border-left-color: var(--green);
-        }
-        .toast-warning {
-            border-left-color: var(--orange);
-        }
-        .toast-error {
-            border-left-color: var(--red);
-        }
+        .toast.show { transform: translateX(0); }
+        .toast-success { border-left-color: var(--green); }
+        .toast-warning { border-left-color: var(--orange); }
+        .toast-error { border-left-color: var(--red); }
         .scroll-y {
             overflow-y: auto;
             max-height: 580px;
             padding-right: 6px;
             overflow-x: hidden;
         }
-        .scroll-y::-webkit-scrollbar {
-            width: 6px;
-        }
-        .scroll-y::-webkit-scrollbar-track {
-            background: transparent;
-        }
-        .scroll-y::-webkit-scrollbar-thumb {
-            background: var(--s3);
-            border-radius: 4px;
-        }
-        .scroll-y::-webkit-scrollbar-thumb:hover {
-            background: #383838;
-        }
+        .scroll-y::-webkit-scrollbar { width: 6px; }
+        .scroll-y::-webkit-scrollbar-track { background: transparent; }
+        .scroll-y::-webkit-scrollbar-thumb { background: var(--s3); border-radius: 4px; }
+        .scroll-y::-webkit-scrollbar-thumb:hover { background: #383838; }
         .edit-btn {
             padding: 5px 10px;
             border-radius: 5px;
@@ -455,30 +340,12 @@
             align-items: center;
             gap: 4px;
         }
-        .edit-btn-add {
-            background: rgba(74, 222, 128, .12);
-            color: var(--green);
-            border: 1px solid rgba(74, 222, 128, 0.2);
-        }
-        .edit-btn-add:hover {
-            background: rgba(74, 222, 128, .25);
-        }
-        .edit-btn-remove {
-            background: rgba(248, 113, 113, .12);
-            color: var(--red);
-            border: 1px solid rgba(248, 113, 113, 0.2);
-        }
-        .edit-btn-remove:hover {
-            background: rgba(248, 113, 113, .25);
-        }
-        .edit-btn-save {
-            background: rgba(232, 168, 56, .12);
-            color: var(--accent);
-            border: 1px solid rgba(232, 168, 56, 0.2);
-        }
-        .edit-btn-save:hover {
-            background: rgba(232, 168, 56, .25);
-        }
+        .edit-btn-add { background: rgba(74,222,128,.12); color: var(--green); border: 1px solid rgba(74,222,128,0.2); }
+        .edit-btn-add:hover { background: rgba(74,222,128,.25); }
+        .edit-btn-remove { background: rgba(248,113,113,.12); color: var(--red); border: 1px solid rgba(248,113,113,0.2); }
+        .edit-btn-remove:hover { background: rgba(248,113,113,.25); }
+        .edit-btn-save { background: rgba(232,168,56,.12); color: var(--accent); border: 1px solid rgba(232,168,56,0.2); }
+        .edit-btn-save:hover { background: rgba(232,168,56,.25); }
         .progress-bar-container {
             background: var(--s3);
             border-radius: 20px;
@@ -497,7 +364,7 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            background: rgba(248, 113, 113, .15);
+            background: rgba(248,113,113,.15);
             color: var(--red);
             font-size: 10px;
             font-weight: 700;
@@ -506,29 +373,90 @@
             min-width: 20px;
             margin-left: 2px;
         }
-        .tab-badge-green {
-            background: rgba(74, 222, 128, .15);
-            color: var(--green);
+        .tab-badge-green { background: rgba(74,222,128,.15); color: var(--green); }
+        .tab-badge-blue { background: rgba(103,184,240,.15); color: var(--blue); }
+        /* 自定义 Modal 样式 */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s;
         }
-        .tab-badge-blue {
-            background: rgba(103, 184, 240, .15);
-            color: var(--blue);
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
         }
+        .modal-box {
+            background: var(--s1);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 24px;
+            min-width: 320px;
+            max-width: 90%;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+        }
+        .modal-title {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+        .modal-input {
+            width: 100%;
+            padding: 8px 12px;
+            background: var(--s2);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--t1);
+            font-size: 14px;
+            margin-bottom: 12px;
+        }
+        .modal-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+            margin-top: 16px;
+        }
+        .modal-btn {
+            padding: 8px 18px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            border: none;
+        }
+        .modal-btn-cancel { background: var(--s3); color: var(--t2); }
+        .modal-btn-confirm { background: var(--accent); color: #000; }
     </style>
 </head>
 <body class="min-h-screen pb-20">
     <div class="orb orb-1"></div>
     <div class="orb orb-2"></div>
     <div id="toastBox"></div>
+    <!-- 自定义 Modal 骨架 -->
+    <div id="modalOverlay" class="modal-overlay">
+        <div class="modal-box">
+            <div id="modalTitle" class="modal-title"></div>
+            <div id="modalContent"></div>
+            <div class="modal-buttons" id="modalButtons"></div>
+        </div>
+    </div>
 
     <div class="relative z-10 max-w-5xl mx-auto px-4 py-8">
         <header class="mb-6 bg-amber-500/10 border border-amber-500/20 rounded-xl p-4 flex gap-3 items-start">
             <i class="fas fa-circle-exclamation text-xl mt-0.5 text-amber-400"></i>
             <div class="text-xs text-amber-200/80 space-y-1">
                 <p class="font-bold text-amber-300 text-sm">💡 书签修复与对比工具</p>
-                <p>1. <strong>上传文件</strong>：支持 TXT/CSV/HTML 书签文件，或直接粘贴文本。</p>
-                <p>2. <strong>一键修复</strong>：自动解析分类、去重，并生成标准 HTML 书签文件。</p>
-                <p>3. <strong>对比历史备份</strong>：加载旧版书签后，可查看新增、缺失、变更项。</p>
+                <p>1. <strong>上传文件</strong>：支持 TXT/CSV/HTML/JSON 书签文件。</p>
+                <p>2. <strong>一键修复</strong>：自动解析分类、去重，生成标准书签。</p>
+                <p>3. <strong>对比历史备份</strong>：查看新增、缺失、变更项。</p>
             </div>
         </header>
 
@@ -539,19 +467,19 @@
                 </h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                     <div>
-                        <label class="block text-xs font-semibold mb-2 text-neutral-400">📄 新书签文件（.txt / .html / .csv）</label>
+                        <label class="block text-xs font-semibold mb-2 text-neutral-400">📄 新书签文件 (.txt / .html / .csv / .json)</label>
                         <div id="srcDropZone" class="drop-zone">
                             <i class="fas fa-file-import text-2xl mb-1 text-neutral-500"></i>
                             <p class="text-xs font-medium text-neutral-300" id="srcFileLabel">点击或拖拽上传待修复的书签文件</p>
-                            <input type="file" id="txtFileInput" accept=".txt,.html,.htm,.csv" class="hidden">
+                            <input type="file" id="txtFileInput" accept=".txt,.html,.htm,.csv,.json" class="hidden">
                         </div>
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold mb-2 text-neutral-400">📥 旧备份文件（.html）</label>
+                        <label class="block text-xs font-semibold mb-2 text-neutral-400">📥 旧备份文件 (.html / .json)</label>
                         <div id="oldDropZone" class="drop-zone">
                             <i class="fas fa-history text-2xl mb-1 text-neutral-500"></i>
-                            <p class="text-xs font-medium text-neutral-300" id="oldFileLabel">点击或拖拽上传旧的 favorites.html</p>
-                            <input type="file" id="htmlFileInput" accept=".html,.htm" class="hidden">
+                            <p class="text-xs font-medium text-neutral-300" id="oldFileLabel">点击或拖拽上传旧的 favorites 文件</p>
+                            <input type="file" id="htmlFileInput" accept=".html,.htm,.json" class="hidden">
                         </div>
                     </div>
                 </div>
@@ -583,12 +511,18 @@
                     <button class="tab-btn" data-tab="deadlinks" onclick="switchTab('deadlinks')">
                         <i class="fas fa-plug-circle-xmark"></i> 连通性检测 <span id="deadlinksBadge" class="tab-badge tab-badge-blue" style="display:none">0</span>
                     </button>
+                    <button class="tab-btn" data-tab="trash" onclick="switchTab('trash')">
+                        <i class="fas fa-trash-can"></i> 回收站 <span id="trashBadge" class="tab-badge" style="display:none">0</span>
+                    </button>
                 </div>
 
                 <div id="tabPreview" style="display:block;" class="space-y-3">
-                    <div class="flex justify-end p-1">
-                        <button class="edit-btn edit-btn-save py-1 px-2.5 text-xs rounded-md shadow flex items-center gap-1" onclick="regenerateHtmlAndPanels(); if(oldBookmarkList.length>0) runOptimizedComparison(); showToast('分类树已刷新','success');">
+                    <div class="flex justify-between items-center p-1">
+                        <button class="edit-btn edit-btn-save py-1 px-2.5 text-xs" onclick="regenerateHtmlAndPanels(); if(oldBookmarkList.length>0) runOptimizedComparison(); showToast('分类树已刷新','success');">
                             <i class="fas fa-arrows-rotate"></i> 刷新分类树
+                        </button>
+                        <button class="edit-btn edit-btn-save py-1 px-2.5 text-xs" onclick="exportCurrentViewCSV()">
+                            <i class="fas fa-file-csv"></i> 导出当前视图为 CSV
                         </button>
                     </div>
                     <div id="previewPanel" class="preview-box"></div>
@@ -661,6 +595,16 @@
                         <div class="empty"><i class="fas fa-bolt"></i><p>点击上方按钮开始检测</p></div>
                     </div>
                 </div>
+
+                <div id="tabTrash" style="display:none;">
+                    <div class="mb-4 p-3 bg-zinc-900/60 border border-zinc-800 rounded-lg flex justify-between items-center text-xs">
+                        <span class="text-neutral-400">被删除的书签会暂存于此，可以恢复或永久删除。</span>
+                        <button class="edit-btn edit-btn-remove py-1.5 px-3" onclick="emptyTrash()">🗑️ 清空回收站</button>
+                    </div>
+                    <div id="trashPanel" class="scroll-y">
+                        <div class="empty"><i class="fas fa-trash-can"></i><p>回收站为空</p></div>
+                    </div>
+                </div>
             </section>
         </main>
     </div>
@@ -674,6 +618,7 @@
         let comparisonDone = false;
         let suspiciousBookmarks = [];
         let deadBookmarks = [];
+        let deletedBookmarks = []; // 回收站
         let rawComparisonCache = { matched: [], onlyInNew: [], onlyInOld: [] };
 
         /* ========== 工具函数 ========== */
@@ -681,11 +626,9 @@
             if (!text) return "";
             return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
         }
-
         function generateUid() {
             return 'bm_' + Math.random().toString(36).substring(2, 11) + Date.now().toString(36);
         }
-
         function levenshtein(s1, s2) {
             const len1 = s1.length, len2 = s2.length;
             if (len1 === 0) return len2; if (len2 === 0) return len1;
@@ -700,23 +643,18 @@
             }
             return prev[len2];
         }
-
         function normalizeUrl(url) {
             try {
                 let u = url.toLowerCase().trim();
                 u = u.replace(/^(https?:\/\/)?(www\.)?/, '');
                 if (u.endsWith('/')) u = u.slice(0, -1);
                 return u;
-            } catch {
-                return url.toLowerCase().trim();
-            }
+            } catch { return url.toLowerCase().trim(); }
         }
-
         function cleanCoreName(name) {
             if (!name) return "";
             return name.toLowerCase().replace(/\[可疑链接已删除\]/g, "").replace(/[\s,.\-_|()\[\]【】、，@\/\\]+/g, "").trim();
         }
-
         function nameSimilarity(a, b) {
             const sa = a.toLowerCase().trim();
             const sb = b.toLowerCase().trim();
@@ -726,7 +664,6 @@
             if (Math.abs(sa.length - sb.length) / maxLen > 0.6) return 0;
             return 1 - levenshtein(sa, sb) / maxLen;
         }
-
         function extractDomain(url) {
             try {
                 if (url.startsWith('about:blank')) return 'deleted-placeholder';
@@ -734,7 +671,6 @@
                 return u.hostname.replace(/^www\./, '');
             } catch { return null; }
         }
-
         function calculateMatchScore(newBookmark, oldBookmark, mode) {
             const normNew = normalizeUrl(newBookmark.url);
             const normOld = normalizeUrl(oldBookmark.url);
@@ -744,14 +680,12 @@
                 const domA = extractDomain(newBookmark.url);
                 const domB = extractDomain(oldBookmark.url);
                 if (domA && domB && domA === domB && domA !== 'deleted-placeholder') score += 0.4;
-                const nameScore = nameSimilarity(newBookmark.title, oldBookmark.title);
-                score += nameScore * 0.6;
+                score += nameSimilarity(newBookmark.title, oldBookmark.title) * 0.6;
             } else {
                 score += nameSimilarity(normNew, normOld) * 0.5 + nameSimilarity(newBookmark.title, oldBookmark.title) * 0.5;
             }
             return Math.min(score, 1.0);
         }
-
         function adjustSlider(step) {
             const slider = document.getElementById("cmpScoreSlider");
             let newVal = parseInt(slider.value) + step;
@@ -760,12 +694,10 @@
             slider.value = newVal;
             updateSliderMetric(newVal);
         }
-
         function updateSliderMetric(val) {
             document.getElementById("cmpScoreSliderVal").textContent = val + "%";
             filterComparisonView();
         }
-
         function showToast(msg, type) {
             type = type || "info";
             const t = document.createElement("div");
@@ -776,23 +708,29 @@
             setTimeout(() => { t.classList.remove("show"); setTimeout(() => t.remove(), 350); }, 3200);
         }
 
-        function generateBookmarkHtml(categoryMap) {
-            let h = '<!DOCTYPE NETSCAPE-Bookmark-file-1>\n<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8">\n<TITLE>Bookmarks</TITLE>\n<H1>Bookmarks</H1>\n<DL><p>\n';
-            for (const [cat, subs] of Object.entries(categoryMap)) {
-                h += '    <DT><H3>' + escapeHtml(cat) + '</H3>\n    <DL><p>\n';
-                for (const [sub, items] of Object.entries(subs)) {
-                    h += '        <DT><H3>' + escapeHtml(sub) + '</H3>\n        <DL><p>\n';
-                    items.forEach(item => {
-                        h += '            <DT><A HREF="' + escapeHtml(item.u) + '">' + escapeHtml(item.t) + '</A>\n';
-                    });
-                    h += '        </DL><p>\n';
-                }
-                h += '    </DL><p>\n';
-            }
-            h += '</DL><p>\n';
-            return h;
+        /* ========== 自定义暗黑 Modal ========== */
+        function showModal(title, contentHtml, buttons) {
+            return new Promise((resolve) => {
+                const overlay = document.getElementById('modalOverlay');
+                document.getElementById('modalTitle').textContent = title;
+                document.getElementById('modalContent').innerHTML = contentHtml;
+                const btnContainer = document.getElementById('modalButtons');
+                btnContainer.innerHTML = '';
+                buttons.forEach(btn => {
+                    const button = document.createElement('button');
+                    button.className = 'modal-btn ' + (btn.cls || 'modal-btn-cancel');
+                    button.textContent = btn.text;
+                    button.onclick = () => {
+                        overlay.classList.remove('active');
+                        resolve(btn.value);
+                    };
+                    btnContainer.appendChild(button);
+                });
+                overlay.classList.add('active');
+            });
         }
 
+        /* ========== 书签解析（新增 JSON 支持） ========== */
         function parseBookmarkHtml(html) {
             const results = [];
             try {
@@ -817,6 +755,32 @@
             return results;
         }
 
+        function parseBookmarkJson(jsonText) {
+            const results = [];
+            try {
+                const data = JSON.parse(jsonText);
+                function extractBookmarks(node, parentTitle = '') {
+                    if (node.type === 'url' && node.url) {
+                        const title = node.name || parentTitle || '未命名';
+                        results.push({ id: generateUid(), title, url: node.url });
+                    }
+                    if (node.children && Array.isArray(node.children)) {
+                        node.children.forEach(child => extractBookmarks(child, node.name || parentTitle));
+                    }
+                }
+                if (data.roots) {
+                    Object.values(data.roots).forEach(root => extractBookmarks(root));
+                } else if (Array.isArray(data)) {
+                    data.forEach(item => extractBookmarks(item));
+                } else if (data.children) {
+                    extractBookmarks(data);
+                }
+            } catch(e) {
+                // 如果JSON解析失败，静默返回空，由调用方处理
+            }
+            return results;
+        }
+
         function regenerateHtmlAndPanels() {
             const categoryMap = {};
             processedBookmarks.forEach(bm => {
@@ -829,23 +793,33 @@
             renderPreview(categoryMap);
             renderDuplicates();
             renderSuspiciousPanel();
+            renderTrashPanel();
         }
 
-        /* 核心解析函数，已增加HTTP判断 */
         function processData() {
             const raw = document.getElementById('rawTextArea').value;
             if (!raw.trim()) { showToast("请先粘贴或上传书签数据", "warning"); return; }
 
-            if (processedBookmarks.length > 0) {
-                if (!confirm("重新处理将覆盖当前所有修改，是否继续？")) return;
+            if (processedBookmarks.length > 0 || deletedBookmarks.length > 0) {
+                showModal('确认重新处理', '重新处理将清空当前所有书签和回收站，是否继续？', [
+                    { text: '取消', value: false, cls: 'modal-btn-cancel' },
+                    { text: '继续', value: true, cls: 'modal-btn-confirm' }
+                ]).then(confirmed => {
+                    if (confirmed) doProcess(raw);
+                });
+            } else {
+                doProcess(raw);
             }
+        }
 
+        function doProcess(raw) {
             const lines = raw.split("\n");
             const urlSet = new Set();
             processedBookmarks = [];
             duplicateList = [];
             suspiciousBookmarks = [];
             deadBookmarks = [];
+            deletedBookmarks = [];
 
             lines.forEach(line => {
                 line = line.trim();
@@ -927,7 +901,7 @@
             showToast("书签解析完成！", "success");
         }
 
-        /* 差异比对（性能优化版本） */
+        /* ========== 差异比对（性能优化） ========== */
         function runOptimizedComparison() {
             if (processedBookmarks.length === 0 || oldBookmarkList.length === 0) return;
             rawComparisonCache = { matched: [], onlyInNew: [], onlyInOld: [] };
@@ -1046,220 +1020,731 @@
             const items = getSelectedOldItems(); if (!items.length) return showToast("请勾选书签","warning");
             let added = 0;
             items.forEach(it => { if (!processedBookmarks.some(b => normalizeUrl(b.url) === normalizeUrl(it.url))) { processedBookmarks.push({ id: generateUid(), title: it.title, url: it.url, cat: "历史挽回", sub: "其他" }); added++; } });
-            regenerateHtmlAndPanels(); runOptimizedComparison(); showToast(`已添加 ${added} 条`,"success");
+            regenerateizedComparison(); showToast(`HtmlAndPanels(); runOptimizedComparison(); showToast(`已添加 ${added} 已添加 ${added} 条`,"success");
         }
+        function batch导出条`,"success");
+       为Txt }
         function batch导出为Txt() {
-            const items = getSelectedOldItems(); if (!items.length) return showToast("请勾选","warning");
-            let txt = "大类,小类,标题,备注,预警,网址\n";
-            items.forEach(it => txt += `历史备份,导出,${it.title},,国内直连,${it.url}\n`);
-            const blob = new Blob([txt],{type:'text/plain'}); const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "old_bookmarks.txt"; a.click(); showToast("已下载");
+            const items() {
+            const items = getSelectedOldItems(); if = getSelectedOld (!items.lengthItems(); if (!items.length) return showToast("请) return showToast("请勾选","warning");
+           勾选 let txt = "大类,小类,","warning");
+            let txt = "大类,标题,备注,预警小类,标题,备注,预警,网址\n";
+,网址\n";
+            items.forEach(it => txt            items.forEach(it => txt += `历史备份 += `历史备份,导出,${,导出,${it.title},,it.title},,国内直连,${it国内直连,${it.url}\n`);
+.url}\n`);
+            const blob = new Bl            const blob = new Blob([txt],{type:'text/plain'});ob([txt],{type:'text/plain'}); const a = document.createElement(" const a = document.createElement("a"); a.ha"); a.href = URL.createObjectURL(blref = URL.createObjectURL(blob); a.download =ob); a.download = "old_bookmarks "old_bookmarks.txt"; a.click();.txt"; a.click(); showToast("已下载 showToast("已下载");
         }
 
-        /* 可疑链接面板（含HTTP标签） */
-        function renderSuspiciousPanel() {
+");
+        }
+
+        /* ========== 可疑链接面板 ========== */
+        function        /* ========== 可疑链接面板 ========== */
+        function renderSuspicious renderSuspiciousPanel() {
+            const panelPanel() {
             const panel = document.getElementById("suspiciousPanel");
-            if (!suspiciousBookmarks.length) { panel.innerHTML = '<div class="empty"><p>没有待修复链接</p></div>'; return; }
-            const traceable = [], untraceable = [];
-            suspiciousBookmarks.forEach(sb => {
-                const core = cleanCoreName(sb.originalTitle);
+            = document.getElementById("suspiciousPanel");
+            if (!suspiciousBook if (!suspiciousBookmarks.length) { panel.innerHTML = '<div class="emptymarks.length) { panel.innerHTML = '<div class="empty"><p>没有待"><p>没有待修复链接</p></div修复链接</p></div>'; return; }
+            const traceable = [],>'; return; }
+            untraceable = [];
+            suspicious const traceable = [], untraceable = [];
+            suspiciousBookmarks.forEach(sBookmarks.forEach(sb => {
+                const core = cleanCoreb => {
+                const core = cleanCoreName(sb.originalTitleName(sb.originalTitle);
                 const matches = [];
-                if (oldBookmarkList.length && core) {
-                    oldBookmarkList.forEach(ob => { const s = calculateMatchScore({title:core,url:""}, ob, 'domain'); if(s>=0.35) matches.push({title:ob.title, url:ob.url, score:s}); });
-                    matches.sort((a,b)=>b.score-a.score);
+);
+                const matches = [];
+                if (oldBookmark                if (oldBookmarkList.length && core) {
+List.length && core) {
+                    oldBookmarkList.forEach                    oldBookmarkList.forEach(ob => { const s(ob => { const s = calculateMatchScore({title:core = calculateMatchScore({title:core,url:""},,url:""}, ob, 'domain'); if(s>= ob, 'domain'); if(s>=0.35) matches0.35) matches.push.push({({title:ob.title,title:ob.title, url:ob.url, score url:ob.url, score:s}); });
+                    matches:s}); });
+                    matches.sort((a,b)=>b.sort((a,b)=>b.score-a.score);
                 }
-                (matches.length ? traceable : untraceable).push({ item: sb, matches });
+.score-a.score);
+                }
+                (matches.length ? trace                (matches.length ? traceable : untraceable).push({ item: sb,able : untraceable).push({ item: sb, matches });
             });
-            let html = '<div class="scroll-y space-y-4">';
-            html += `<div class="bg-zinc-900 p-3 rounded"><h4 class="text-emerald-400 font-bold text-xs">可追溯 (${traceable.length})</h4>`;
+            let html = '<div class=" matches });
+            });
+            let html = '<div class="scroll-y space-y-4scroll-y space-y-4">';
+            html +=">';
+            html += `<div class="bg-zinc-900 p-3 rounded"><h4 class=" `<div class="bg-zinc-900 p-3 rounded"><h4 class="text-emerald-400 font-bold text-xs">可追溯 (${traceable.lengthtext-emerald-400 font-bold text-xs">可追溯 (${traceable.length})</h4>})</h4>`;
+            traceable.forEach(t`;
             traceable.forEach(t => {
-                html += `<div class="flex items-center justify-between mt-2"><input type="checkbox" name="suspiciousTraceCheckbox" data-id="${t.item.id}"><div class="flex-1 ml-2"><span class="text-zinc-300">${escapeHtml(t.item.originalTitle)}</span>`;
-                html += `<select id="sel_url_${t.item.id}" class="bg-zinc-800 text-xs ml-2">${t.matches.map(m => `<option value="${escapeHtml(m.url)}">${escapeHtml(m.title)} (${Math.round(m.score*100)}%)</option>`).join('')}</select></div>`;
-                html += `<button class="edit-btn edit-btn-add" onclick="commitFixSuspiciousLink('${t.item.id}','select')">修复</button></div>`;
+                html += => {
+                html += `<div class="flex items `<div class="flex items-center justify-between mt-2"><input type="checkbox"-center justify-between mt-2"><input type="checkbox" name="susp name="suspiciousiciousTraceCheckbox" data-id="${t.item.id}"><div class="TraceCheckbox" data-id="${t.item.id}"><div classflex-1 ml-="flex-1 ml-22"><span class="text-z"><span class="text-zinc-300">${escapeinc-300">${escapeHtml(t.item.Html(t.item.originalTitle)}</span>originalTitle)}</span>`;
+                html +=`;
+                html += `<select `<select id="sel_url_${t.item.id id="sel}" class="bg-zinc-800 text-xs ml-_url_${t.item.id}" class="bg-zinc-800 text-xs2">${t.m ml-2">${t.matches.map(m => `<optionatches.map(m => `<option value="${escapeHtml(m.url)}">${escapeHtml(m value="${escapeHtml(m.url)}">${escapeHtml(m.title)} (${Math.round(m.score*100)}%).title)} (${Math.round(m.score*100)}%)</option>`).join('</option>`).join('')}</select></div>')}</select></div>`;
+                html += `<button`;
+                html += `<button class="edit-btn edit class="edit-btn-btn-add" onclick="commit edit-btn-add" onclick="commitFixSuspiciousLink('${t.item.id}FixSuspiciousLink('${t','select')">修复</.item.id}button></div>`;
+           ','select')">修复</button></div>`;
             });
             html += '</div>';
-            html += `<div class="bg-zinc-900 p-3 rounded"><h4 class="text-orange-400 font-bold text-xs">待手动输入 (${untraceable.length})</h4>`;
+            html });
+            html += '</div += `<div class="bg-zinc->';
+            html += `<div class="bg-zinc-900 p-3 rounded900 p-3 rounded"><h4 class="text-or"><h4 class="text-orange-400 font-bold text-xs">待手动输入 (${untange-400 font-bold text-xs">待手动输入 (${untraceable.length})</hraceable.length})</h4>`;
+            untrace4>`;
             untraceable.forEach(sb => {
-                html += `<div class="flex items-center justify-between mt-2"><div class="flex-1"><span class="text-zinc-300">${escapeHtml(sb.originalTitle)}</span><input id="input_url_${sb.id}" class="bg-zinc-800 text-xs ml-2 w-64" placeholder="https://"></div>`;
-                html += `<button class="edit-btn edit-btn-save" onclick="commitFixSuspiciousLink('${sb.id}','input')">填入</button></div>`;
+able.forEach(sb => {
+                html += `<div class="flex items-center justify-between                html += `<div class="flex items-center justify-between mt-2"><div class mt-2"><div class="flex-1"><span="flex-1"><span class="text-zinc- class="text-zinc-300">${escapeHtml(s300">${escapeHtml(sb.originalTitle)}b.originalTitle)}</span><input id="</span><input id="input_url_${sb.id}" classinput_url_${sb.id="bg-z}" class="bg-zinc-800 text-xs mlinc-800 text-xs ml-2 w-64" placeholder="https://"></div-2 w-64" placeholder="https://"></div>`;
+                html +=>`;
+                html += `<button class="edit-btn edit-btn-s `<button class="edit-btn edit-btn-saveave"" onclick="commitFixSuspiciousLink('${sb onclick="commitFixSuspiciousLink('${sb.id}','input.id}','input')">填入</button></')">填入</button></div>`;
             });
-            html += '</div></div>';
+           div>`;
+            });
+            html += '</div></div html += '</div></div>';
+            panel.innerHTML = html>';
             panel.innerHTML = html;
-            document.getElementById("suspiciousBadge").textContent = suspiciousBookmarks.length;
+            document.getElementById(";
+            document.getElementById("suspiciousBadge").suspiciousBadge").textContent = suspiciousBooktextContent = suspiciousBookmarks.length;
         }
 
-        function executeBatchSuspiciousLookup() { renderSuspiciousPanel(); showToast("已刷新匹配"); }
+        function executeBatchSuspiciousmarks.length;
+        }
+
+        function executeBatchSuspiciousLookup() { renderSLookup() { renderSuspiciousPanel(); showToast("已刷新uspiciousPanel(); showToast("已刷新匹配匹配"); }
+        function executeBatch"); }
         function executeBatchAutoFixSuspicious() {
-            const cbs = document.querySelectorAll('input[name="suspiciousTraceCheckbox"]:checked');
-            if (!cbs.length) return showToast("请勾选要修复的项目","warning");
+            const cbs =AutoFixSuspicious() {
+            const cbs = document.querySelectorAll('input[name document.querySelectorAll('input[name="suspiciousTrace="suspiciousTraceCheckbox"]:checked');
+            if (!cbsCheckbox"]:checked');
+.length            if (!cbs.length) return showToast("请) return showToast("请勾选要修复的项目勾选要修复的项目","warning");
+            let","warning");
             let fixed = 0;
+            fixed = 0;
             cbs.forEach(cb => {
-                const uid = cb.dataset.id; const sb = suspiciousBookmarks.find(b=>b.id===uid); if(!sb) return;
-                const matches = []; oldBookmarkList.forEach(ob => { const s = calculateMatchScore({title:cleanCoreName(sb.originalTitle),url:""},ob,'domain'); if(s>=0.4) matches.push({url:ob.url,score:s}); });
+                const uid = cb.dataset.id; cbs.forEach(cb => {
+                const uid = cb.dataset.id; const sb const sb = suspiciousBookmarks.find(b = suspiciousBookmarks.find(b=>b.id===uid);=>b.id===uid); if(!sb) return;
+ if(!sb) return;
+                const matches = []; oldBookmarkList                const matches = []; oldBookmark.forEach(obList.forEach(ob => { const s = calculateMatchScore => { const s({title:clean = calculateMatchScore({title:cleanCoreName(sb.CoreName(sb.originalTitle),url:originalTitle),url:""},ob,'""},ob,'domain'); if(s>=domain'); if(s>=0.4) matches.push0.4) matches.push({url:ob.url,({url:ob.url,score:s}); });
+                ifscore:s}); });
                 if (matches.length) {
-                    matches.sort((a,b)=>b.score-a.score);
-                    const target = processedBookmarks.find(b=>b.id===uid);
-                    if (target) { target.url = matches[0].url; target.title = target.title.replace(/\[可疑链接已删除\]/g,"").trim(); target.originalTitle = target.originalTitle.replace(/\[可疑链接已删除\]/g,"").trim(); target.isSuspicious = false; fixed++; }
+                    (matches.length) {
+                    matches.sort((a,b)=> matches.sort((a,b)=>b.score-a.score);
+                   b.score-a.score);
+                    const target = processedBookmarks.find(b=>b.id=== const target = processedBookmarks.find(b=>b.id===uid);
+                    if (targetuid);
+                    if (target) { target.url = matches) { target.url = matches[0].url; target[0].url; target.title = target.title.replace(/\[可疑链接.title = target.title.replace(/\[可疑链接已删除\]/g,"已删除\]/g,"").trim(); target.original").trim(); target.originalTitle = target.Title = target.originalTitle.replace(/\[可疑originalTitle.replace(/\[可疑链接已删除\]/g链接已删除\]/g,"").trim(); target.is,"").trim(); target.isSuspicious = false; fixed++; }
+                }
+           Suspicious = false; });
+            suspiciousBookmarks = fixed++; }
                 }
             });
-            suspiciousBookmarks = processedBookmarks.filter(b=>b.isSuspicious);
-            regenerateHtmlAndPanels(); runOptimizedComparison(); showToast(`已修复 ${fixed} 条`,"success");
+            suspiciousBookmarks = processedBookmarks.filter(b=> processedBookmarks.filter(b=>b.isSuspb.isSuspicious);
+            regenerateHtmlicious);
+AndPanels(); runOptim            regenerateHtmlAndPanels(); runOptimizedComparison(); showToast(`izedComparison(); showToast(`已修复已修复 ${fixed}  ${fixed} 条`,"success");
+       条`,"success");
         }
+        function commitFixSuspiciousLink(uid, }
         function commitFixSuspiciousLink(uid, type) {
-            let url = type==='select' ? document.getElementById(`sel_url_${uid}`).value : document.getElementById(`input_url_${uid}`).value.trim();
-            if (!url) return showToast("请输入网址","warning"); if (!url.startsWith('http')) url = 'https://'+url;
-            const target = processedBookmarks.find(b=>b.id===uid); if(!target) return;
-            target.url = url; target.title = target.title.replace(/\[可疑链接已删除\]/g,"").trim(); target.originalTitle = target.originalTitle.replace(/\[可疑链接已删除\]/g,"").trim(); target.isSuspicious = false;
-            suspiciousBookmarks = suspiciousBookmarks.filter(b=>b.id!==uid);
-            regenerateHtmlAndPanels(); if(oldBookmarkList.length) runOptimizedComparison(); showToast("修复成功");
+            let url type) {
+            let url = type==='select' ? document.getElementById(` = type==='select' ? document.getElementById(`sel_url_${uid}`).valuesel_url_${uid}`).value : document.getElementById(`input_url_${uid}` : document.getElementById(`input_url_${uid}`).value.trim();
+            if).value.trim();
+            if (!url) return showToast("请输入网址 (!url) return showToast("请输入网址","warning"); if","warning"); if (!url.startsWith('http')) url = 'https (!url.startsWith('http')) url = 'https://'+url;
+            const://'+url;
+            const target = processedBookmarks.find(b=>b target = processedBookmarks.find.id===uid(b=>b.id===uid); if(!target) return;
+            target); if(!target) return;
+            target.url = url.url = url; target.title = target; target.title = target.title.replace(/.title.replace(/\[可疑链接已删除\]/g,"").\[可疑链接已删除\]/g,"").trim(); target.trim(); target.originalTitle = target.originalTitle.replace(/\[可疑链接已删除\]/goriginalTitle = target.originalTitle.replace(/\[可疑链接已删除\]/g,"").trim();,"").trim(); target.isSuspicious = false;
+            suspiciousBookmarks target.isSuspicious = false;
+            suspiciousBookmarks = suspiciousBookmarks.filter(b=>b = suspiciousBookmarks.filter(b=>b.id!==uid);
+            regenerateHtml.id!==uid);
+            regenerateHtmlAndPanels(); if(oldAndPanels(); if(oldBookmarkList.length) runOptimBookmarkList.length) runOptimizedComparison(); showToastizedComparison(); showToast("("修复成功");
         }
 
-        /* 分类预览（已增加HTTP标签） */
+       修复成功");
+        }
+
+        /* ========== 分类 /* ========== 分类预览（含HTTP预览（含HTTP标签标签及及回收回收站操作站操作） ========== */
+       ） ========== */
         function renderPreview(categoryMap) {
+            let html function renderPreview(categoryMap) {
             let html = "";
-            for (const [cat, subs] of Object.entries(categoryMap)) {
-                html += '<div class="folder-hd"><i class="fas fa-folder-open mr-1.5"></i>' + escapeHtml(cat) + '</div>';
-                for (const [sub, items] of Object.entries(subs)) {
-                    if (sub !== "其他" || Object.keys(subs).length > 1) html += '<div class="subfolder-hd">' + escapeHtml(sub) + '</div>';
+            = "";
+            for (const [cat, subs for (const [cat, subs] of Object.entries(c] of Object.entries(categoryMap)) {
+                htmlategoryMap)) {
+                html += '<div class="folder += '<div class="folder-hd"><i class="-hd"><i class="fas fa-folder-open mrfas fa-folder-open mr-1.5"></i-1.5"></i>' +>' + escapeHtml(cat) + '</div>';
+                escapeHtml(cat) + '</div>';
+                for (const for (const [sub, items] of Object [sub, items] of Object.entries(subs)) {
+.entries(subs)) {
+                    if (sub !== "其他" || Object.keys                    if (sub !== "其他" || Object(subs).length > .keys(subs).length > 1) html += '<div1) html += '<div class="subfolder-h class="subfolder-hd">' + escapeHtmld">' + escapeHtml(sub) + '</div>';
+(sub) + '</div>';
                     items.forEach(item => {
-                        const target = processedBookmarks.find(b => b.url === item.u);
+                        const target = processedBook                    items.forEach(item => {
+                        const target = processedBookmarks.find(b => b.urlmarks.find(b => b.url === item.u);
+                        const === item.u);
                         const safeId = target ? target.id : "";
-                        const baseTitle = item.t.replace(/\s*\[.+?\]/g, "").replace(/\s*-\s*.+$/, "").trim();
-                        const warningTag = (item.t.match(/\[(国内直连|需翻墙|访问慢)\]/) || [])[1] || "";
-                        const isHttp = item.u.startsWith('http://'); // 判断HTTP
+                        const base safeId = target ? target.id : "";
+                        const baseTitle = item.t.replace(/\s*\[.+Title = item.t.replace(/\s*\[.+?\]/g, ""?\]/g, "").replace(/\s*).replace(/\s*-\s*.+$/, "").trim();
+                       -\s*.+$/, "").trim();
+                        const warningTag = (item const warningTag = (item.t.match(/\[(.t.match(/\[(国内直连|需国内直连|需翻墙|访问慢翻墙|访问慢)\]/) || [])[1] || "";
+                        const)\]/) || [])[1] || "";
+                        const isHttp = item.u.startsWith('http://');
+                        html isHttp = item.u.startsWith += `
+                           ('http://');
                         html += `
-                            <div class="bm-row" data-id="${safeId}">
+                            <div class="bm-row" data-id <div class="bm-row" data-id="${safeId}="${safeId}">
                                 <div class="flex items-center gap-2 min-w-0 flex-1">
-                                    <span class="bm-title truncate">${escapeHtml(baseTitle)}</span>
-                                    ${warningTag ? `<span class="bm-tag ${warningTag==='国内直连'?'bm-tag-g':'bm-tag-w'}">${escapeHtml(warningTag)}</span>` : ''}
-                                    ${isHttp ? '<span class="bm-tag-http" title="旧版HTTP网站，测活可能受限，建议手动点击验证">⚠️ HTTP</span>' : ''}
-                                    <span class="text-[10px] text-zinc-600 truncate ml-2">(${escapeHtml(item.u)})</span>
+                                    <span class">
+                                <div class="flex items-center gap-2 min-w-0 flex-1">
+                                    <span class="bm-title truncate">="bm-title truncate">${escapeHtml(baseTitle)}${escapeHtml(baseTitle)}</span>
+                                    ${warning</span>
+                                    ${warningTag ? `<span class="Tag ? `<span class="bm-tag ${bm-tag ${warningTagwarningTag==='国内直连'==='国内直连'?'bm-tag-g?'bm-tag-g':'bm-tag-w'}':'bm-tag-w'}">${escapeHtml(warning">${escapeHtml(warningTag)}</span>` :Tag)}</span>` : ''}
+                                    ${isHttp ''}
+                                    ${isHttp ? '<span class="bm-tag-http" title ? '<span class="bm-tag="旧版HTTP网站，测-http" title="旧版HTTP网站，测活可能受限，建议手动活可能受限，建议手动点击验证">⚠️ HTTP点击验证">⚠️ HTTP</span>' : ''}
+</span>' : ''}
+                                    <span class="text-[10                                    <span class="textpx] text-z-[10px] text-zinc-600 truncate mlinc-600 truncate ml-2">(${escape-2">(${escapeHtml(item.u)Html(item.u)})</span>
+                                </})</span>
                                 </div>
+                                <div classdiv>
                                 <div class="flex gap-1">
-                                    <button class="edit-btn edit-btn-save text-[10px]" onclick="manualEditBookmarkFieldByUid('${safeId}')">改分类</button>
-                                    <button class="edit-btn edit-btn-remove text-[10px]" onclick="manualRemoveFromPreviewByUid('${safeId}')">移除</button>
+="flex gap-1">
+                                    <button class="edit-btn edit                                    <button class="edit-btn edit-btn-save-btn-save text-[10px]" onclick="manualEdit text-[10px]" onclick="manualEditBookmarkFieldByBookmarkFieldByUid('${safeId}')">改分类</button>
+                                   Uid('${safeId}')">改分类</button>
+                                    <button class="edit-btn edit-btn-remove text-[10 <button class="edit-btn edit-btn-remove text-[10px]" onclick="movepx]" onclick="moveToTrash('${safeId}')">移除ToTrash('${safeId}')">移除</button>
+                                </div</button>
                                 </div>
                             </div>`;
                     });
                 }
+>
+                            </div>`;
+                    });
+                }
             }
-            document.getElementById("previewPanel").innerHTML = html || '<div class="text-zinc-500 text-center py-8">暂无数据</div>';
+            document.getElementById("pre            }
+            documentviewPanel")..getElementById("previewPanel").innerHTML = htmlinnerHTML = html || || '<div class="text-zinc '<div class="text-zinc-500 text-center py-8">暂无数据</div-500 text-center py-8">暂无数据</div>';
         }
 
-        function manualRemoveFromPreviewByUid(uid) {
-            const idx = processedBookmarks.findIndex(b => b.id === uid); if (idx === -1) return;
-            if (!confirm("确定删除吗？")) return;
-            processedBookmarks.splice(idx,1); deadBookmarks = deadBookmarks.filter(b=>b.url !== processedBookmarks[idx]?.url); suspiciousBookmarks = suspiciousBookmarks.filter(b=>b.id!==uid);
-            regenerateHtmlAndPanels(); if(oldBookmarkList.length) runOptimizedComparison(); showToast("已删除");
-        }
-        function manualEditBookmarkFieldByUid(uid) {
-            const target = processedBookmarks.find(b=>b.id===uid); if(!target) return;
-            const newCat = prompt("新大类", target.cat); if(newCat===null) return;
-            const newSub = prompt("新小类", target.sub); if(newSub===null) return;
-            const newTitle = prompt("新标题", target.title); if(newTitle===null) return;
-            target.cat = newCat.trim()||"未分类"; target.sub = newSub.trim()||"其他"; target.title = newTitle.trim()||"未命名"; target.originalTitle = target.title;
-            regenerateHtmlAndPanels(); if(oldBookmarkList.length) runOptimizedComparison(); showToast("分类已更新");
+        function export>';
         }
 
-        /* 死链检测（含HTTP标签） */
+        function exportCurrentViewCSV() {
+            ifCurrentViewCSV() {
+            if (processedBookmarks.length === (processedBookmarks.length === 0) return 0) return showToast("没有书 showToast("没有书签可导出", "warning签可导出", "warning");
+            let csv = "");
+            let csv = "大类,小类,网站标题,大类,小类,网站标题,网址\n网址\n";
+            processedBook";
+            processedBookmarks.forEach(bm => {
+marks.forEach(bm => {
+                csv += `                csv += `"${bm.cat}","${bm.sub}"${bm.cat}","${bm.sub}","${bm.title}","","${bm.title}","${bm.url}"\${n`;
+            });
+            constbm.url}"\n`;
+            });
+            const blob = new Blob([' blob = new Blob(['\uFEFF' +\uFEFF' + csv], {type: ' csv], {type: 'text/csv;charsettext/csv;charset=utf-8;'=utf-8;'});
+           });
+            const a const a = document.createElement(" = document.createElement("a");
+a");
+            a.href            a.href = URL.createObjectURL( = URL.createObjectURL(blob);
+            a.download =blob);
+            a.download = "当前 "当前书签视图书签视图_" + new Date().toISO_" + new Date().toISOString().slice(0,String().slice(0,10) + ".csv";
+            a.click();
+10) + ".csv";
+            a.click();
+            showToast("CS            showToast("CSV 已导出", "success");
+        }
+
+       V 已导出", "success");
+        }
+
+        /* 回收 /* 回收站相关站相关 */
+        function move */
+        function moveToTrash(ToTrash(uid) {
+            constuid) {
+            const idx = processed idx = processedBookmarks.findIndex(b =>Bookmarks.findIndex(b => b.id === uid);
+            b.id === uid);
+            if (idx === -1) return;
+            const if (idx === -1) return;
+            const bm = processedBookmarks.s bplice(idx, 1m = processedBookmarks.splice(idx, 1)[0];
+            deletedBook)[0];
+            deletedBookmarks.push(bm);
+            regeneratemarks.push(bm);
+            regenerateHtmlHtmlAndPanels();
+            renderAndPanels();
+            renderTrashPanel();
+            showToastTrashPanel();
+            showToast("已移入回收站", "success("已移入回收站", "success");
+        }
+
+        function restore");
+        }
+
+        function restoreFromFromTrash(uid) {
+Trash(uid) {
+            const idx = deletedBookmarks.findIndex(b            const idx = deletedBookmarks.find => b.id === uid);
+Index(b => b.id === uid);
+            if (idx === -            if (idx === -1) return;
+            const1) return;
+            const bm = deletedBookmarks.splice(idx, 1 bm = deletedBookmarks.splice(idx, 1)[0];
+            //)[0];
+            // 检查是否重复 检查是否重复
+            if (processedBookmarks.some(b => normalize
+            if (processedBookmarks.some(b => normalizeUrl(b.url) === normalizeUrl(b.url) === normalizeUrl(bm.url))) {
+Url(bm.url))) {
+                showToast("                showToast("该书签已该书存在签已存在，无法恢复，无法恢复", "warning");
+                return", "warning");
+                return;
+            }
+            processedBook;
+            }
+            processedBookmarks.push(bm);
+            regenerateHtmlmarks.push(bm);
+           AndPanels();
+            render regenerateHtmlAndPanels();
+            renderTrashPanel();
+            showTrashPanel();
+            showToast("已恢复", "success");
+        }
+
+       Toast("已恢复", "success");
+        }
+
+        function permanentlyDelete( function permanentlyDelete(uid) {
+            showuid) {
+            showModal('Modal确认永久删除',('确认永久删除', '此 '此操作不可撤销，确定操作不可撤销，确定要要永久删除该书永久删除该书签吗？', [
+               签吗？', [
+                { text: '取消', { text: '取消', value: false, cls: value: false, cls: 'modal-btn-cancel' 'modal-btn-cancel' },
+                { text: ' },
+                { text: '删除', value: true, cls: 'modal-btn-confirm删除', value: true, cls: 'modal-btn-confirm' }
+            ]).then' }
+            ]).then(confirmed => {
+                if(confirmed => {
+                if (confirmed) {
+                    deleted (confirmed) {
+                    deletedBookmarks = deletedBookBookmarks = deletedBookmarks.filter(b => b.idmarks.filter(b => b.id !== uid);
+                    renderTrashPanel();
+                    showToast !== uid);
+                    renderTrashPanel();
+                    showToast("已永久删除("已永久删除", "success");
+                }
+", "success");
+                }
+            });
+        }
+
+        function            });
+        }
+
+        function emptyTrash emptyTrash() {
+            if (deletedBookmarks() {
+            if (deletedBookmarks.length === 0) return;
+            showModal.length === 0) return;
+            showModal('清('清空回收站', '确认空回收站', '确认清清空空所有所有回收站回收站内的书内的书签吗？此签吗操作不可恢复。？此操作不可恢复。', [
+                { text:', [
+                { text: ' '取消', value: false, cls: 'modal-btn取消', value: false, cls: 'modal-btn-cancel' },
+               -cancel' },
+                { text: '清空', { text: '清空', value: true, cls: 'modal-btn-confirm value: true, cls: 'modal-btn-confirm'' }
+            ]).then }
+            ]).then(confirmed => {
+                if (confirmed) {
+                    deleted(confirmed => {
+                if (confirmed) {
+                    deletedBookmarks = [];
+                    renderTrashPanel();
+                    showBookmarks = [];
+                    renderTrashPanel();
+                    showToast("回收Toast("回收站已清空", "站已清空", "success");
+                }
+            });
+success");
+                }
+            });
+        }
+
+        function renderTr        }
+
+        function renderTrashPanel() {
+            constashPanel() {
+            const panel = document.getElementById("trashPanel");
+            const badge = document.getElementById("tr panel = document.getElementById("trashPanel");
+            const badge = document.getElementById("trashBadge");
+            badgeashBadge");
+            badge.textContent = deletedBook.textContent = deletedBookmarks.length;
+            badge.style.display = deletedBookmarks.length > 0 ? "" : "marks.length;
+            badge.style.display = deletedBookmarks.length > 0 ? "" : "none";
+            if (denone";
+            if (deletedBookmarks.length === letedBookmarks.length === 0) {
+                panel.innerHTML = '<div class="empty0) {
+                panel.innerHTML = '<div class="empty"><"><i class="fas fai class="fas fa-trash-can"></i-trash-can"></i><p>回收站为空</p></div>';
+               ><p>回收站为空</p></div>';
+                return;
+            }
+            let return;
+            }
+            let html = '';
+            deleted html = '';
+            deletedBookmarks.forEach(bm => {
+                html +=Bookmarks.forEach(b `
+                    <div class="listm => {
+                html += `
+                    <div class="list-row">
+                       -row">
+                        <div <div class="flex-1">
+ class="flex-1">
+                            <span                            <span class="text class="text-zinc-300">${-zinc-300">${escapeHtml(bm.title)}escapeHtml(bm.title)}</span>
+                            <span</span>
+                            <span class="list class="list-url">-url">${escapeHtml(bm.url${escapeHtml(bm.url)}</span>
+                        </div>
+                        <div class)}</span>
+                        </div>
+                        <div class="flex gap-2">
+                            <button class="edit-btn edit-btn-add" onclick="restoreFromTrash('${bm.id}')">恢复</button>
+                            <button="flex gap-2">
+                            <button class="edit-btn edit-btn-add" onclick="restoreFromTrash('${bm.id}')">恢复</button>
+                            <button class="edit-btn edit-btn-remove" onclick="permanently class="edit-btn edit-btn-remove" onclick="permanentlyDelete('${bm.id}Delete('${bm.id}')">彻底删除</')">彻底删除</buttonbutton>
+                        </div>
+                    </div>`;
+            });
+>
+                        </div>
+                    </div>`;
+            });
+            panel.innerHTML = html;
+            panel.innerHTML = html;
+        }
+
+        /* 死        }
+
+        /* 死链检测（链检测（含含进度预估进度预估） */
+        async function start） */
         async function startDeadLinkCheck() {
-            if (!processedBookmarks.length) return showToast("没有书签可检测","warning");
-            const btn = document.getElementById("startCheckDeadBtn"); btn.disabled = true;
+           DeadLinkCheck() {
+            if (!processedBookmarks.length) return show if (!processedBookmarks.length) return showToast("没有Toast("没有书签可检测","warning书签可检测","warning");
+            const btn = document");
+            const btn = document.getElementById("startCheck.getElementById("startCheckDeadBtn");DeadBtn"); btn.disabled = true;
+            document.getElementById btn.disabled = true;
+            document.getElementById("("checkProgressText").classList.remove("hidden");
             document.getElementById("checkProgressText").classList.remove("hidden");
-            document.getElementById("progressBarContainer").classList.remove("hidden");
-            document.getElementById("deadlinksListPanel").innerHTML = '<div class="empty"><i class="fas fa-circle-notch fa-spin"></i>检测中...</div>';
+            document.getElementById("progressBarContainer").progressBarContainer").classList.remove("hidden");
+            document.getElementById("deadlinksclassList.remove("hidden");
+            document.getElementById("deadlinksListPanel").innerHTML =ListPanel").innerHTML = '<div class="empty '<div class="empty"><i class="fas fa-circle"><i class="fas fa-circle-notch fa-spin"></i>检测中...</div-notch fa-spin"></i>检测中...</div>';
+            deadBookmarks = [];
+            let checked = >';
             deadBookmarks = [];
             let checked = 0;
             const total = processedBookmarks.length;
-            for (let i = 0; i < total; i += 8) {
+           0;
+            const total = processedBookmarks.length;
+            const startTime = Date.now const startTime = Date.now();
+();
+            for (let i            for (let i = 0; i = 0; i < total; i += 8 < total; i += 8) {
+                const batch) {
                 const batch = processedBookmarks.slice(i, i+8);
-                await Promise.all(batch.map(async bm => {
+                = processedBookmarks.slice(i, i+8);
+                await Promise.all(b await Promise.all(batch.map(async bm =>atch.map(async bm => {
+                    if (bm.url.startsWith('about:blank')) { {
                     if (bm.url.startsWith('about:blank')) { checked++; return; }
-                    const ctrl = new AbortController(); const timer = setTimeout(() => ctrl.abort(), 5000);
+                    const ctrl = new Ab checked++; return; }
+                    const ctrl = new AbortController(); const timer = setTimeout(() => ctrlortController(); const timer = setTimeout(() => ctrl.abort(), 5000.abort(), 5000);
                     try {
-                        const res = await fetch(bm.url, { mode: 'cors', signal: ctrl.signal });
-                        if (!res.ok && res.status !== 0) deadBookmarks.push(bm);
+                        const);
+                    try {
+                        const res = await fetch(bm res = await fetch(bm.url, { mode: '.url, { mode: 'cors', signal: ccors', signal: ctrl.signal });
+                        iftrl.signal });
+                        if (!res.ok && res.status (!res.ok && res.status !== 0) deadBook !== 0) deadBookmarks.push(bm);
+                   marks.push(bm);
                     } catch(e) {
-                        if (e.name === 'AbortError') deadBookmarks.push(bm);
-                        else if (e.message?.includes('Failed to fetch') && !e.message.includes('CORS')) {
+                        } catch(e) {
+                        if (e.name === if (e.name === ' 'AbortError') deadBookAbortError') deadBookmarks.push(bm);
+                       marks.push(bm);
+                        else if (e.message?. else if (e.message?.includes('Failed to fetch')includes('Failed to fetch') && !e.message.includes('CORS')) {
+                            try && !e.message.includes('CORS')) {
                             try {
-                                const c2 = new AbortController(); const t2 = setTimeout(() => c2.abort(), 3000);
-                                await fetch(bm.url, { mode: 'no-cors', signal: c2.signal }); clearTimeout(t2);
-                            } catch { deadBookmarks.push(bm); }
+                                const c2 = new AbortController(); const {
+                                const c2 = new AbortController(); const t2 = setTimeout(() => t2 = setTimeout(() => c2.abort(),  c2.abort(), 3000);
+                                await fetch3000);
+                                await fetch(bm.url(bm.url, { mode, { mode: 'no-cors',: 'no-cors', signal: c2.signal signal: c2.signal }); clearTimeout }); clearTimeout(t2);
+                            } catch {(t2);
+                            } catch { deadBookmarks.push(bm deadBookmarks.push(bm); }
                         }
-                    } finally { clearTimeout(timer); checked++; document.getElementById("progressBarFill").style.width = (checked/total*100)+"%"; }
+                    }); }
+                        }
+                    } finally { clearTimeout(timer finally { clearTimeout(timer); checked++; }
+); checked++; }
                 }));
+                }));
+                const                const elapsed = ( elapsed = (Date.now() - startTimeDate.now() - startTime) / 1000;
+) / 1000;
+                const speed                const speed = checked / = checked / elapsed;
+                const remaining elapsed;
+                const remaining = Math = Math.ceil((.ceil((total - checked) / speedtotal - checked) / speed);
+                document.getElementById);
+                document.getElementById("progressBarFill").style.width = (("progressBarFill").style.width = (checked/total*checked/total*100100)+)+"%";
+                document.getElementById(""%";
+                document.getElementById("checkProgressText").textContentcheckProgressText").textContent = `进度 = `进度 ${ ${checked}/${total}，checked}/${total}，预计剩余 ${预计剩余 ${remaining} 秒`;
             }
-            document.getElementById("checkProgressText").textContent = `完成，发现 ${deadBookmarks.length} 个死链`;
-            btn.disabled = false; btn.textContent = "重新检测";
-            renderDeadlinksView();
+           remaining} 秒`;
+            }
+            document document.getElementById("checkProgressText.getElementById("checkProgressText").textContent = `完成").textContent = `完成，发现 ${deadBookmarks，发现 ${deadBookmarks.length} 个死链.length} 个死链`;
+            btn.disabled =`;
+            btn.disabled = false; btn.textContent = false; btn.textContent = "重新检测";
+            render "重新检测";
+            renderDeadlinksDeadlinksView();
         }
 
-        function deleteFromActiveBookmarks(url) {
-            if (!confirm("确定删除该链接吗？")) return;
-            processedBookmarks = processedBookmarks.filter(b => b.url !== url);
-            deadBookmarks = deadBookmarks.filter(b => b.url !== url);
-            suspiciousBookmarks = suspiciousBookmarks.filter(b => b.url !== url);
-            regenerateHtmlAndPanels(); renderDeadlinksView(); if(oldBookmarkList.length) runOptimizedComparison();
-            showToast("已删除");
+        functionView();
         }
+
+        function deleteFromActive deleteFromActiveBookmarks(url) {
+           Bookmarks(url) {
+            showModal('确认 showModal('确认删除', '确定删除', '确定要删除要删除该链接该链接吗？',吗？', [
+                { text: [
+                { text: '取消', value: false '取消', value: false, cls: 'modal, cls: 'modal-btn-cancel' },
+               -btn-cancel' },
+                { text: '删除', { text: '删除', value: true, cls: value: true, cls: 'modal-btn-confirm' 'modal-btn-confirm' }
+            ]).then( }
+            ]).then(confirmed => {
+confirmed => {
+                if (                if (confirmed) {
+                    const bconfirmed) {
+                    const bm = processedBookmarks.findm = processedBookmarks.find(b => b.url === url(b => b.url === url);
+                   );
+                    if (bm) if (bm) {
+                        processedBook {
+                        processedBookmarks = processedBookmarks.filtermarks = processedBookmarks.filter(b => b.url !==(b => b.url !== url url);
+                        deletedBookmarks.push);
+                        deletedBookmarks.push(bm);
+                        dead(bm);
+                        deadBookmarks = deadBookmarks = deadBookmarks.filter(b => bBookmarks.filter(b => b.url !== url);
+                        suspicious.url !== url);
+                        suspiciousBookmarks =Bookmarks = suspiciousBookmarks suspiciousBookmarks.filter(b => b.url !== url);
+                        regenerateHtml.filter(b => b.url !== url);
+                        regenerateHtmlAndPanels();
+                        renderAndPanels();
+                        renderDeadlinksDeadlinksView();
+                        renderTrashView();
+                        renderTrashPanel();
+                        if (oldPanel();
+                        if (oldBookmarkList.length) runBookmarkList.length) runOptimizedComparison();
+                        showOptimizedComparison();
+                        showToast("已Toast("已移入回收站移入回收站", "success");
+                    }
+", "success");
+                    }
+                }
+            });
+                }
+            });
+               }
+
+        function renderDead }
 
         function renderDeadlinksView() {
-            const panel = document.getElementById("deadlinksListPanel");
-            document.getElementById("deadlinksBadge").textContent = deadBookmarks.length;
-            if (!deadBookmarks.length) { panel.innerHTML = '<div class="empty text-emerald-400"><p>未发现死链</p></div>'; return; }
-            let html = '<div class="text-xs text-rose-400 mb-2">以下链接无法连接：</div>';
-            deadBookmarks.forEach((db, idx) => {
-                const isHttp = db.url.startsWith('http://');
-                html += `<div class="list-row border-l-2 border-rose-500"><span class="text-zinc-600 w-6">${idx+1}</span><div class="flex-1"><div class="font-bold text-xs">${escapeHtml(db.title)}${isHttp ? ' <span class="bm-tag-http">⚠️ HTTP</span>' : ''}</div><span class="list-url text-rose-400">${escapeHtml(db.url)}</span></div><button class="edit-btn edit-btn-remove" data-url="${escapeHtml(db.url)}" onclick="deleteFromActiveBookmarks(this.dataset.url)">删除</button></div>`;
+linksView() {
+            const            const panel = document.getElementById(" panel = document.getElementById("deadlinksListPanel");
+           deadlinksListPanel");
+            document.getElementById("dead document.getElementById("deadlinksBadlinksBadge").textContent = deadge").textContent = deadBookmarks.length;
+            ifBookmarks.length;
+            if (!deadBookmarks.length) (!deadBookmarks.length) { panel.innerHTML = '<div { panel.innerHTML = '<div class="empty text-em class="empty text-emerald-400"><p>erald-400"><p>未发现死链</p未发现死链</p></div>'; return;></div>'; return; }
+            let html = }
+            let html = '<div class="text-xs text '<div class="text-xs text-rose-400 mb--rose-400 mb-2">以下链接2">以下链接无法连接：</div>';
+无法连接：</div>';
+            deadBookmarks.forEach((            deadBookmarks.forEach((db, idx) => {
+db, idx) => {
+                const isHttp = db                const isHttp = db.url.url.startsWith('http://.startsWith('http://');
+               ');
+                html += `<div html += `<div class="list-row border class="list-row border-l-2-l-2 border-rose border-rose-500"><span class-500"><span class="text-zinc-600="text-zinc-600 w-6">${idx w-6">${idx+1}</span><+1}</span><divdiv class="flex-1 class="flex-1"><div class="font-bold text"><div class="font-bold text-xs">${escapeHtml(db.title)}${isHttp ?-xs">${escapeHtml(db.title)}${isHttp ? ' <span class="bm ' <span class="bm-tag-http">⚠-tag-http">⚠️ HTTP</span>' :️ HTTP</span>' : ''}</div><span ''}</div><span class="list-url class="list-url text-rose-400"> text-rose-400">${escapeHtml(db.url)}${escapeHtml(db.url)}</span></div><button</span></div><button class="edit-btn class="edit-btn edit-btn-remove" data edit-btn-remove" data-url="${escapeHtml(db-url="${escapeHtml(db.url.url)}" onclick="deleteFrom)}" onclick="deleteFromActiveBookmarks(this.datasetActiveBookmarks(this.dataset.url)">删除</button.url)">删除</button></div>`;
+            });
+            panel.innerHTML = html;
+       ></div>`;
             });
             panel.innerHTML = html;
         }
 
-        /* 其他函数保持不变 */
-        function renderStats(total, dup, cats, susp) {
-            document.getElementById("statsPanel").innerHTML = `
-                <div class="stat-grid">
-                    <div class="stat-card"><div class="stat-val text-green-400">${total}</div><div class="stat-lbl">有效书签</div></div>
-                    <div class="stat-card"><div class="stat-val text-rose-400">${dup}</div><div class="stat-lbl">已去重</div></div>
-                    <div class="stat-card"><div class="stat-val text-amber-400">${cats}</div><div class="stat-lbl">分类数</div></div>
-                    <div class="stat-card"><div class="stat-val text-orange-400">${susp}</div><div class="stat-lbl">可疑项</div></div>
-                </div>`;
-        }
-        function renderDuplicates() {
-            const p = document.getElementById("duplicatesPanel");
-            p.innerHTML = duplicateList.length ? '<div class="scroll-y">'+duplicateList.map((d,i)=>`<div class="list-row"><span>${i+1}</span><span class="list-url">${escapeHtml(d.url)}</span></div>`).join('')+'</div>' : '<div class="empty"><p>无重复网址</p></div>';
-        }
-        function renderCompareEmpty() { document.getElementById("comparePanel").innerHTML = '<div class="empty"><p>请上传旧备份文件以启用对比</p></div>'; document.getElementById("cmpBadge").classList.add("hidden"); }
-        function toggleGroup(hd) { hd.classList.toggle("open"); hd.nextElementSibling?.classList.toggle("open"); }
-        function switchTab(name) {
-            document.querySelectorAll(".main-tab-bar .tab-btn").forEach(b => b.classList.toggle("active", b.dataset.tab === name));
-            ['preview','duplicates','compare','suspicious','deadlinks'].forEach(t => {
-                const panel = document.getElementById('tab'+t.charAt(0).toUpperCase()+t.slice(1));
-                if (panel) panel.style.display = t===name ? 'block' : 'none';
+        /* }
+
+        /* 手动 手动编辑书编辑书签（使用签（使用自定义自定义 Modal  Modal 替换替换 prompt） */
+        function manual prompt） */
+        function manualEditBookmarkFieldByUid(uid)EditBookmarkFieldByUid(uid) {
+            const target = processedBookmarks.find(b=>b {
+            const target = processed.id===uid);
+Bookmarks.find(b=>b.id===uid);
+            if (!target)            if (! return;
+            const content = `
+               target) return;
+            const content = `
+                <label <label class class="block="block text-xs mb text-xs mb-1">大类-1">大类</label>
+                <input</label>
+                <input id="edit id="editCat" class="modalCat" class="modal-input" value="${escape-input" value="${escapeHtml(target.cat)}">
+Html(target.cat)}">
+                <label class="block                <label class="block text-xs mb-1"> text-xs mb-1">小类</label>
+               小类</label>
+                <input id="editSub" class <input id="editSub" class="modal-input" value="${escapeHtml(target.sub="modal-input" value="${escapeHtml(target.sub)}">
+                <label class)}">
+                <label="block text-xs mb class-="block text-xs mb-1">标题</label>
+1">标题</label>
+                <input id="edit                <input id="editTitle" class="modal-inputTitle" class="modal-input" value="${escapeHtml(target" value="${escapeHtml(target.title)}">
+            `;
+.title)}">
+            `;
+            showModal('修改书签分类            showModal('修改书签分类', content, [
+', content, [
+                {                { text: '取消 text: '取消', value: false, cls: '', value: false, cls: 'modalmodal-btn-cancel' },
+-btn-cancel' },
+                { text: '保存                { text: '保存', value: true, cls', value: true, cls: 'modal-btn-confirm: 'modal-btn-confirm' }
+           ' }
+ ]).then            ]).then(confirmed => {
+               (confirmed => {
+                if (confirmed) {
+                    if (confirmed) {
+                    target.cat = document.getElementById target.cat = document.getElementById('editCat').value.trim('editCat').value.trim() || "未分类() || "未分类";
+                    target.sub =";
+                    target.sub = document.getElementById('editSub'). document.getElementById('editSub').value.trim() || "其他value.trim() || "其他";
+                    target.title = document";
+                    target.title = document.getElementById('editTitle').value.getElementById('editTitle').value.trim() || ".trim() || "未命名";
+                    target.未命名";
+                    target.originalTitle = target.title;
+originalTitle = target.title;
+                    regenerateHtml                    regenerateHtmlAndPanels();
+                    ifAndPanels();
+                    if(oldBookmark(oldBookmarkList.length) runOptimList.length) runOptimizedComparison();
+                    showToastizedComparison();
+                    showToast("分类已更新("分类已更新", "success", "success");
+                }
+            });
+       ");
+                }
             });
         }
-        function bindFileUploadEvents() {
-            const srcZ = document.getElementById("srcDropZone"), srcI = document.getElementById("txtFileInput");
-            const oldZ = document.getElementById("oldDropZone"), oldI = document.getElementById("htmlFileInput");
-            srcZ.addEventListener("click",()=>srcI.click()); srcZ.addEventListener("dragover",e=>{e.preventDefault();srcZ.classList.add("dragover")}); srcZ.addEventListener("dragleave",()=>srcZ.classList.remove("dragover")); srcZ.addEventListener("drop",e=>{e.preventDefault();srcZ.classList.remove("dragover");if(e.dataTransfer.files[0])readFile(e.dataTransfer.files[0],'src')}); srcI.addEventListener("change",()=>{if(srcI.files[0])readFile(srcI.files[0],'src')});
-            oldZ.addEventListener("click",()=>oldI.click()); oldZ.addEventListener("dragover",e=>{e.preventDefault();oldZ.classList.add("dragover")}); oldZ.addEventListener("dragleave",()=>oldZ.classList.remove("dragover")); oldZ.addEventListener("drop",e=>{e.preventDefault();oldZ.classList.remove("dragover");if(e.dataTransfer.files[0])readFile(e.dataTransfer.files[0],'old')}); oldI.addEventListener("change",()=>{if(oldI.files[0])readFile(oldI.files[0],'old')});
+
+        function manualRemove }
+
+        function manualRemoveFromPreviewFromPreviewByUidByUid(uid) {(uid) { moveToTr moveToTrash(uid); }
+
+       ash(uid); }
+
+        /* ========= /* ========== 其他辅助= 其他辅助函数 ========== */
+       函数 ========== */
+        function render function renderStats(totalStats(total, dup, cats, dup, cats, susp) {
+            document, susp) {
+            document.getElementById("statsPanel").inner.getElementById("statsPanel").innerHTML = `
+                <divHTML = `
+                <div class="stat-grid">
+                    class="stat-grid">
+                    <div class=" <div class="stat-cardstat-card"><div class="stat-val"><div class="stat-val text-green-400">${ text-green-400">${total}</divtotal}</div><div class><div class="stat-lbl">有效="stat-lbl">有效书签</div></div书签</div></div>
+                    <div class=">
+                    <div class="stat-card"><div class="stat-card"><div class="stat-val text-rose-stat-val text-rose-400">${dup}</div400">${dup}</div><div class><div class="stat-l="stat-lbl">已去重</bl">已去重</div></divdiv></div>
+                    <div class="stat-card"><div class="stat-val>
+                    <div class="stat-card"><div class="stat-val text-amber-400">${ text-amber-400">${cats}</div><div classcats}</div><div class="stat-lbl">分类="stat-lbl">分类数</div></div>
+数</div></div>
+                    <div class="stat                    <div class="stat-card"><div class="stat-card"><div class="stat-val text-orange--val text-orange-400400">${susp}</div">${susp}</div><div class="stat-l><div class="stat-lbl">可疑项</divbl">可疑></div项</div>
+                </div></div>
+                </div>`;
         }
+        function>`;
+        }
+        function renderDuplicates() {
+            renderDuplicates() {
+            const p = document.getElementById(" const p = document.getElementById("duplicatesPanel");
+            pduplicatesPanel");
+            p.innerHTML = duplicateList.length ?.innerHTML = duplicateList.length ? '<div class="scroll '<div class="scroll-y-y">'+duplicateList">'+duplicateList.map((d,i)=>`.map((d,i)=>`<div class="list-row<div class="list-row"><span>${i+"><span>${i+1}</span1}</span><span class><span class="list-url">${escape="list-url">${escapeHtml(d.url)}</spanHtml(d.url)}</span></div>`).join('></div>`).join('')+'</div>' :')+'</div>' : '<div class="empty '<div class="empty"><p>无重复网址"><p>无重复网址</p></div>';
+       </p></div>';
+        }
+        function renderCompareEmpty }
+        function renderCompareEmpty() { document.getElementById("compare() { document.getElementById("comparePanel").innerHTML =Panel").innerHTML = '<div class=" '<div class="empty"><pempty"><p>请上传旧备份文件>请上传旧备份文件以启用对比</p以启用对比</p></></div>'; documentdiv>'; document.getElementById(".getElementById("cmpBadge").classListcmpBadge").classList.add("hidden"); }
+        function toggleGroup.add("hidden"); }
+       (h function toggleGroup(hd) { hdd) { hd.classList.classList.toggle("open"); h.toggle("open"); hd.nextElementSibling?.d.nextElementSibling?.classList.toggle("openclassList.toggle("open"); }
+        function switchTab"); }
+        function switchTab(name) {
+            document.querySelector(name) {
+            document.querySelectorAll(".main-tabAll(".main-tab-bar .tab-btn").forEach-bar .tab-btn").forEach(b => b.classList.toggle(b => b.classList.toggle("active", b.dataset("active", b.dataset.tab === name));
+.tab ===            name));
+            ['preview','du ['preview','duplicates','compare','splicates','compare','suspicious','deadlinksuspicious','deadlinks','trash'].forEach(t','trash'].forEach(t => {
+                const => {
+                const panel panel = document.getElementById('tab'+ = document.getElementById('tab'+t.charAt(0).tot.charAt(0).toUpperCase()+UpperCase()+t.slice(1t.slice(1));
+                if));
+                if (panel) (panel) panel.style.display = t panel.style.display = t===name ? 'block'===name ? 'block' : 'none';
+            });
+ : 'none';
+            });
+        }
+        }
+        function bindFile        function bindFileUploadEvents() {
+            constUploadEvents() {
+            const srcZ = document.getElementById(" srcZ = document.getElementById("srcDropZone"), srcIsrcDropZone"), srcI = document.getElementById("txt = document.getElementById("txtFileInput");
+            const oldFileInput");
+            const oldZ = document.getElementById("oldZ = document.getElementById("oldDropZone"), oldDropZone"), oldI =I = document.getElementById("htmlFileInput document.getElementById("htmlFileInput");
+            srcZ.addEventListener");
+            srcZ.addEventListener("click",()=>src("click",()=>srcI.click()); srcZ.addEventListenerI.click()); srcZ.addEventListener("dragover",("dragover",ee=>{e.preventDefault();src=>{e.preventDefault();srcZ.classList.add("dragoZ.classList.add("dragover")}); srcZ.addEventListenerver")}); srcZ.addEventListener("dragleave",("dragleave",()=>()=>srcZ.classList.remove("drasrcZ.classList.remove("dragover")); srcZgover")); srcZ.addEventListener("drop",e=>.addEventListener("drop",e=>{e.preventDefault();srcZ{e.preventDefault();srcZ.classList.remove("dragover.classList.remove("dragover");if(e.dataTransfer.f");if(e.dataTransfer.files[0])readFileiles[0])readFile(e.dataTransfer.files(e.dataTransfer.files[0],'src')});[0],'src')}); srcI.addEventListener("change", srcI.addEventListener("change",()=>{()=>{if(srcIif(srcI.files[0])read.files[0])readFile(srcI.filesFile(srcI.files[0],'src')});
+[0],'src            oldZ.addEventListener("click')});
+            oldZ.addEventListener("click",()=>oldI.click",()=>oldI.click()); oldZ.addEventListener("dra()); oldZ.addEventListener("dragover",e=>{gover",e=>{e.preventDefault();oldZ.classListe.preventDefault();oldZ.classList.add("dragover").add("dragover")}); oldZ.addEventListener("drag}); oldZ.addEventListener("dragleave",()=>oldZleave",()=>old.classList.remove("dragoverZ.classList.remove("dragover")); oldZ.addEventListener("")); oldZ.addEventListener("drop",e=>{edrop.preventDefault();oldZ.classList.remove",e=>{e.preventDefault();oldZ.classList.remove("drago("dragover");ifver");if(e.dataTransfer.files(e.dataTransfer.files[0])read[0])readFile(eFile(e.dataTransfer.files[0.dataTransfer.files[0],'old')}); old],'old')}); oldI.addEventListenerI.addEventListener("change",()("change",()=>{if(oldI.f=>{if(oldI.files[0])readFileiles[0])readFile(oldI.files[0(oldI.files[0],'old')});
+       ],'old')});
+        }
+        function readFile(file }
         function readFile(file, type) {
-            const reader = new FileReader();
-            reader.onload = e => {
-                if (type==='src') { document.getElementById("rawTextArea").value = e.target.result; document.getElementById("srcDropZone").classList.add("has-file"); showToast("新文件已加载"); }
-                else { oldBookmarkList = parseBookmarkHtml(e.target.result); document.getElementById("oldDropZone").classList.add("has-file"); showToast(`旧备份已加载 (${oldBookmarkList.length}条)`); if(processedBookmarks.length) runOptimizedComparison(); }
+            const, type) {
+            const reader = reader = new FileReader();
+ new FileReader();
+            reader.onload = e            reader.onload = e => {
+                const content => {
+                const content = e.target.result;
+                = e.target.result;
+                if (type === ' if (type === 'src') {
+                    documentsrc') {
+                    document.getElementById("rawText.getElementById("rawTextArea").value = content;
+Area").value = content;
+                    document.getElementById("src                    document.getElementById("srcDropDropZone").classList.add("Zone").classList.add("has-file");
+                    showToasthas-file");
+                    showToast("新文件("新文件已加载");
+                } else已加载");
+                } else {
+                    // {
+                    // 根据 根据扩展扩展名或名或内容判断内容判断格式格式
+                    if (
+                    if (file.name.endsWith('.file.name.endsWith('.json') || (json') || (content.trim().content.trim().startsWith('{')startsWith('{') && content.trim(). && content.trim().endsendsWith('}')))With('}'))) {
+                        const {
+                        const json jsonBookmarks = parseBookmarkBookmarks = parseBookmarkJson(content);
+                        if (Json(content);
+                        if (jsonBookmarks.length) {
+jsonBookmarks.length) {
+                                                       oldBookmark oldBookmarkList = jsonBookmarks;
+List = jsonBookmarks;
+                            document.getElementById("oldDrop                            document.getElementById("oldDropZone").classList.add("Zone").classhas-file");
+                            showToastList.add("has-file");
+                            showToast(`JSON(`JSON 书 书签已加载 (${签已加载 (${oldBookmarkoldBookmarkList.lengthList.length}条)`);
+}条)`);
+                        }                        } else {
+                            showToast(" else {
+                            showToast("未能未能解析JSON解析JSON中的中的书签",书签", "error "error");
+                        }
+                    } else");
+                        }
+                    } else {
+                        {
+                        oldBookmark oldBookmarkList =List = parseBookmark parseBookmarkHtml(contentHtml(content);
+                        document.getElementById("old);
+                        document.getElementById("oldDropZone").classList.addDropZone").classList.add("has-file");
+                        show("has-file");
+                        showToast(`HTML Toast(`HTML 书签已加载 (${书签已加载 (${oldBookmarkList.length}oldBookmarkList.length}条条)`);
+                    }
+                   )`);
+                    }
+                    if (processedBookmarks.length if (processedBookmarks.length) runOptim) runOptimizedComparison();
+                }
+           izedComparison();
+                }
             };
+            reader.readAsText };
             reader.readAsText(file);
         }
-        function downloadResult() {
-            if (!processedBookmarks.length) return showToast("无书签可下载","warning");
-            const tree = {}; processedBookmarks.forEach(b => { if(!tree[b.cat]) tree[b.cat]={}; if(!tree[b.cat][b.sub]) tree[b.cat][b.sub]=[]; tree[b.cat][b.sub].push(b); });
-            let h = '<!DOCTYPE NETSCAPE-Bookmark-file-1>\n<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8">\n<TITLE>Bookmarks</TITLE>\n<H1>Bookmarks</H1>\n<DL><p>\n';
-            for (let cat in tree) { h += '    <DT><H3>'+escapeHtml(cat)+'</H3>\n    <DL><p>\n'; for (let sub in tree[cat]) { h += '        <DT><H3>'+escapeHtml(sub)+'</H3>\n        <DL><p>\n'; tree[cat][sub].forEach(bm => h += '            <DT><A HREF="'+escapeHtml(bm.url)+'">'+escapeHtml(bm.title)+'</A>\n'); h += '        </DL><p>\n'; } h += '    </DL><p>\n'; } h += '</DL><p>';
-            const blob = new Blob([h],{type:'text/html'}); const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "bookmarks_fixed.html"; a.click(); showToast("下载完成");
+        function(file);
         }
-        document.addEventListener("DOMContentLoaded", bindFileUploadEvents);
+        function downloadResult() {
+            if downloadResult() {
+            if (!processedBookmarks.length) (!processedBookmarks.length) return showToast("无 return showToast("无书签可下载","warning书签可下载","warning");
+            const tree = {}");
+            const tree = {}; processedBookmarks.forEach(b; processedBookmarks.forEach(b => { if(! => { if(!tree[b.cattree[b.cat])]) tree[b.cat] tree[b.cat]={}; if(!tree[b={}; if(!tree[b.cat][.cat][b.subb.sub]) tree[b.c]) tree[b.cat][b.sub]=[]; tree[b.cat][b.subat][b.sub]=[]; tree[b.cat][b.sub].push(b);].push(b); });
+            let h = });
+            let h = '<!DOCTYPE NETSCAPE-Book '<!DOCTYPE NETSCAPE-Bookmark-file-1mark-file-1>\n>\n<META HTTP<META HTTP-EQUIV="Content-Type" CONT-EQUIV="Content-Type" CONTENT="text/html; charsetENT="text/html; charset=UTF-8">\n<TITLE>Book=UTF-8">\n<TITLE>Bookmarks</TITLE>\nmarks</TITLE>\n<H1>Bookmarks<H1>Bookmarks</H1>\n<DL><p>\n';
+</H1>\n<DL><p>\n';
+            for (let cat in tree) { h            for (let cat in tree) { h += '    <DT><H3>'+escapeHtml(cat)+ += '    <DT><H3>'+escapeHtml(cat)+'</H3>\n   '</H3>\n    <DL><p>\n'; for (let sub in tree[cat]) { h += '        <DT><H3>'+escapeHtml <DL><p>\n'; for (let sub in tree[cat]) { h += '        <DT><H3>'+escapeHtml(sub)+'</H3>\n       (sub)+'</H3>\n        <DL><p>\n'; tree[cat][sub <DL><p>\n'; tree[cat][sub].forEach(bm => h += '           ].forEach(bm => h += '            <DT><A <DT><A HREF="'+escapeHtml HREF="'+escapeHtml(bm.url)+'">(bm.url)+'">'+escapeHtml(bm.title'+escapeHtml(bm.title)+'</A>\)+'</A>\n'); h += '        </DL><p>\nn'); h += '        </DL><p>\n'; } h += '   '; } h += '    </DL><p>\n </DL><p>\n'; } h += '</DL><p>';
+           '; } h += '</DL><p>';
+            const blob = new Blob([h],{type:'text/html'}); const a const blob = new Blob([h],{type:'text/html'}); const a = document.createElement("a"); = document.createElement("a"); a.href = URL a.href = URL.createObjectURL(blob);.createObjectURL(blob); a.download = "bookmarks_fixed.html a.download = "bookmarks_fixed.html"; a"; a.click(); showToast("下载完成");
+        }
+        document.click(); showToast("下载完成");
+        }
+        document.addEventListener("DOMContentLoaded",.addEventListener("DOMContentLoaded", bindFileUpload bindFileUploadEvents);
+    </script>
+Events);
     </script>
 </body>
 </html>
