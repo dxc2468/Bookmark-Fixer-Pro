@@ -20,7 +20,7 @@
         :root {
             --accent: #e8a838;
             --accent-hover: #d4942a;
-            --accent-glow: rgba(232, 168, 56, 0.12);
+            --accent-glow: rgba(232,168,56,0.12);
             --s0: #0a0a0a;
             --s1: #131313;
             --s2: #1c1c1c;
@@ -38,8 +38,8 @@
         .orb { position: fixed; border-radius: 50%; filter: blur(110px); opacity: .1; pointer-events: none; z-index: 0; }
         .orb-1 { width: 520px; height: 520px; background: var(--accent); top: -160px; left: -140px; animation: oF1 22s ease-in-out infinite; }
         .orb-2 { width: 380px; height: 380px; background: #e05555; bottom: -120px; right: -100px; animation: oF2 28s ease-in-out infinite; }
-        @keyframes oF1 { 0%,100% { transform: translate(0,0) } 50% { transform: translate(90px,130px) } }
-        @keyframes oF2 { 0%,100% { transform: translate(0,0) } 50% { transform: translate(-100px,-70px) } }
+        @keyframes oF1 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(90px,130px)} }
+        @keyframes oF2 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(-100px,-70px)} }
         .card { background: var(--s1); border: 1px solid var(--border); border-radius: 14px; padding: 28px; transition: border-color .3s; position: relative; }
         .card:hover { border-color: #333; }
         textarea { width: 100%; height: 220px; padding: 14px; background: var(--s2); border: 1px solid var(--border); border-radius: 8px; color: var(--t1); font-family: "Cascadia Code","Fira Code",monospace; font-size: 13px; line-height: 1.6; resize: vertical; outline: none; transition: border-color .3s, box-shadow .3s; }
@@ -277,7 +277,7 @@
             });
         }
 
-        // 生成书签 HTML (补全的关键函数)
+        // 生成书签 HTML
         function generateBookmarkHtml(categoryMap) {
             let h = '<!DOCTYPE NETSCAPE-Bookmark-file-1>\n<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8">\n<TITLE>Bookmarks</TITLE>\n<H1>Bookmarks</H1>\n<DL><p>\n';
             for (const [cat, subs] of Object.entries(categoryMap)) {
@@ -330,12 +330,24 @@
                 let displayTitle=title; if(warning)displayTitle+=" ["+warning+"]"; if(note)displayTitle+=" - "+note;
                 const bm={id:generateUid(),title:displayTitle,url,cat,sub,isSuspicious,originalTitle:title}; processedBookmarks.push(bm); if(isSuspicious)suspiciousBookmarks.push(bm);
             });
-            regenerateHtmlAndPanels(); resetDeadlinkTab();
+            regenerateHtmlAndPanels();
+            resetDeadlinkTab();
             if(oldBookmarkList.length>0)runOptimizedComparison(); else{comparisonDone=false;renderCompareEmpty();}
             document.getElementById("resultSection").classList.remove("hidden"); document.getElementById("dlBtn").classList.remove("hidden");
             document.getElementById("dupBadge").textContent=duplicateList.length; document.getElementById("dupBadge").style.display=duplicateList.length?"":"none";
             setTimeout(()=>document.getElementById("resultSection").scrollIntoView({behavior:"smooth",block:"start"}),100);
             showToast("书签解析完成！","success");
+        }
+
+        // 重置死链检测面板
+        function resetDeadlinkTab(){
+            deadBookmarks = [];
+            document.getElementById("deadlinksBadge").style.display = "none";
+            document.getElementById("deadlinksListPanel").innerHTML = '<div class="empty"><i class="fas fa-bolt"></i><p>点击上方按钮开始检测</p></div>';
+            document.getElementById("startCheckDeadBtn").disabled = false;
+            document.getElementById("startCheckDeadBtn").textContent = "开始检测死链";
+            document.getElementById("checkProgressText").classList.add("hidden");
+            document.getElementById("progressBarContainer").classList.add("hidden");
         }
 
         function runOptimizedComparison(){
@@ -388,6 +400,29 @@
         function getSelectedOldItems(){ return Array.from(document.querySelectorAll('input[name="oldUniqueCheckbox"]:checked')).map(cb=>({title:cb.dataset.title,url:cb.dataset.url})); }
         function batchRecoverToNew(){ const items=getSelectedOldItems(); if(!items.length)return showToast("请勾选","warning"); let added=0; items.forEach(it=>{if(!processedBookmarks.some(b=>normalizeUrl(b.url)===normalizeUrl(it.url))){processedBookmarks.push({id:generateUid(),title:it.title,url:it.url,cat:"历史挽回",sub:"其他"});added++;}}); regenerateHtmlAndPanels(); runOptimizedComparison(); showToast(`已添加${added}条`,"success"); }
         function batchExportTxt(){ const items=getSelectedOldItems(); if(!items.length)return showToast("请勾选","warning"); let txt="大类,小类,标题,备注,预警,网址\n"; items.forEach(it=>txt+=`历史备份,导出,${it.title},,国内直连,${it.url}\n`); const blob=new Blob([txt],{type:'text/plain'}); const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download="old_bookmarks.txt"; a.click(); showToast("已下载"); }
+
+        function manualAddMatch(newId){
+            const targetOldUrl = prompt("请输入想要强制绑定的历史旧文件内的完整URL:"); if(!targetOldUrl)return;
+            const oldBm = oldBookmarkList.find(ob => normalizeUrl(ob.url) === normalizeUrl(targetOldUrl)); if(!oldBm)return showToast("对齐失败，旧HTML文件里查无此链接","error");
+            let item = rawComparisonCache.matched.find(m => m.newId === newId);
+            if(item){ if(!item.allMatches.some(m=>m.old.url===oldBm.url)){ item.allMatches.push({old:oldBm,score:1.0}); item.allMatches.sort((a,b)=>b.score-a.score); } }
+            filterComparisonView(); showToast("手工强绑定对齐成功","success");
+        }
+        function manualRemoveMatch(newId, oldUrl){
+            let item = rawComparisonCache.matched.find(m => m.newId === newId);
+            if(item) item.allMatches = item.allMatches.filter(om => om.old.url !== oldUrl);
+            filterComparisonView(); showToast("成功切断指定的关联配对映射","info");
+        }
+        function manualAddToNew(title,url){
+            if(processedBookmarks.some(b=>normalizeUrl(b.url)===normalizeUrl(url)))return showToast("该条在新合并流中已经存在","warning");
+            processedBookmarks.push({id:generateUid(),title,url,cat:"历史对齐挽回",sub:"其他",isSuspicious:false,originalTitle:title});
+            regenerateHtmlAndPanels(); runOptimizedComparison(); showToast("已成功反向将遗漏历史项目补齐至合并流中","success");
+        }
+        function manualAddToOld(title,url){
+            if(oldBookmarkList.some(b=>normalizeUrl(b.url)===normalizeUrl(url)))return showToast("历史镜像中已包含此项","warning");
+            oldBookmarkList.push({id:generateUid(),title,url});
+            runOptimizedComparison(); showToast("正向资产备份同步成功","success");
+        }
 
         // 可疑链接面板
         function renderSuspiciousPanel(){
