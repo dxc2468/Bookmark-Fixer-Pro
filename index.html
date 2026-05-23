@@ -63,7 +63,7 @@
         .drop-zone:hover, .drop-zone.dragover { border-color: var(--accent); background: var(--accent-glow); color: var(--t2); }
         .drop-zone.has-file { border-color: var(--green); border-style: solid; background: rgba(74,222,128,.04); color: var(--green); }
 
-        /* Tab */
+        /* 标签导航 */
         .tab-bar { display: flex; border-bottom: 1px solid var(--border); margin: -28px -28px 20px; padding: 0 28px; overflow-x: auto; }
         .tab-btn {
             padding: 14px 20px; background: none; border: none; color: var(--t3); font-size: 14px; font-weight: 500;
@@ -89,9 +89,9 @@
         .cmp-hd.open .chevron { transform: rotate(90deg); }
         .cmp-badge { font-size: 11px; padding: 2px 9px; border-radius: 10px; font-weight: 700; }
         
-        /* 核心视觉修复点：彻底移除外层残余小滚动条，改用完全平滑折叠过渡 */
-        .cmp-body { max-height: 0; overflow: hidden; transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-        .cmp-body.open { max-height: 5000px; }
+        /* 核心修复样式：采用 display 绝对阻断，根除容器高度塌陷截断 Bug */
+        .cmp-body { display: none; }
+        .cmp-body.open { display: block; }
         
         .cmp-item { display: flex; align-items: flex-start; padding: 12px 16px; gap: 12px; border-bottom: 1px solid rgba(255,255,255,.02); font-size: 13px; flex-wrap: wrap; }
         .cmp-item:hover { background: rgba(255,255,255,.015); }
@@ -100,7 +100,7 @@
         .sim-mid { background: rgba(251,146,60,.12); color: var(--orange); }
 
         /* 统计与通用 */
-        .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px,1fr)); gap: 10px; }
+        .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px,1fr)); gap: 10px; }
         .stat-card { background: var(--s2); border: 1px solid var(--border); border-radius: 10px; padding: 18px 14px; text-align: center; transition: transform .2s, border-color .3s; }
         .stat-card:hover { transform: translateY(-2px); border-color: #3a3a3a; }
         .stat-val { font-size: 30px; font-weight: 900; line-height: 1; margin-bottom: 4px; }
@@ -151,9 +151,8 @@
             <i class="fas fa-circle-exclamation text-xl mt-0.5 text-amber-400"></i>
             <div class="text-xs text-amber-200/80 space-y-1">
                 <p class="font-bold text-amber-300 text-sm">💡 数据归档与无感局部更新系统</p>
-                <p>1. <strong>环境对齐完毕</strong>：代码全面重构兼容 GitHub Pages 运行环境，不再有本地权限静默拦截报错。</p>
-                <p>2. <strong>极简折叠布局</strong>：【对比结果】内的所有子数据组默认完全收缩闭合。右侧残留的多余小滚动条已彻底移除。</p>
-                <p>3. <strong>可疑链接工作台</strong>：支持全自动一键追溯、人工选定或手动补齐新 URL，复活后全量刷新比对面板。</p>
+                <p>1. <strong>局部刷新机制（不丢内容）</strong>：修死链、删书签无需重新载入网页。点击全量重编刷新即可。</p>
+                <p>2. <strong>高选性批量回溯</strong>：【可疑链接】工作台已重构，支持打勾**部分选择或全选**，定向批量自动对齐修复。</p>
             </div>
         </header>
 
@@ -194,19 +193,19 @@
 
                 <div class="card" style="padding-top:0">
                     <div class="tab-bar">
-                        <button class="tab-btn active" data-tab="preview" onclick="switchTab('preview')">
+                        <button class="tab-btn active" data-tab="preview" onclick="switchTab('preview', this)">
                             <i class="fas fa-eye"></i> 分类预览
                         </button>
-                        <button class="tab-btn" data-tab="duplicates" onclick="switchTab('duplicates')">
+                        <button class="tab-btn" data-tab="duplicates" onclick="switchTab('duplicates', this)">
                             <i class="fas fa-clone"></i> 去重详情 <span id="dupBadge" class="tab-badge" style="display:none">0</span>
                         </button>
-                        <button class="tab-btn" data-tab="compare" onclick="switchTab('compare')">
+                        <button class="tab-btn" data-tab="compare" onclick="switchTab('compare', this)">
                             <i class="fas fa-code-compare"></i> 对比结果 <span id="cmpBadge" class="tab-badge tab-badge-green hidden">0</span>
                         </button>
-                        <button class="tab-btn" data-tab="suspicious" onclick="switchTab('suspicious')">
+                        <button class="tab-btn" data-tab="suspicious" onclick="switchTab('suspicious', this)">
                             <i class="fas fa-exclamation-triangle"></i> 可疑链接 <span id="suspiciousBadge" class="tab-badge" style="display:none">0</span>
                         </button>
-                        <button class="tab-btn" data-tab="deadlinks" onclick="switchTab('deadlinks')">
+                        <button class="tab-btn" data-tab="deadlinks" onclick="switchTab('deadlinks', this)">
                             <i class="fas fa-plug-circle-xmark"></i> 无法访问 <span id="deadlinksBadge" class="tab-badge tab-badge-blue" style="display:none">0</span>
                         </button>
                     </div>
@@ -257,10 +256,10 @@
 
                     <div id="tabSuspicious" class="tab-content">
                         <div class="mb-4 p-3 bg-zinc-900/60 border border-zinc-800 rounded-lg flex flex-wrap items-center justify-between gap-3 text-xs">
-                            <span class="text-neutral-400 flex-1 min-w-[280px]"><i class="fas fa-circle-info text-orange-400 mr-1"></i> 工作台支持单条填入修复，亦支持对所有残缺死链进行旧库自动对齐跑批。</span>
+                            <span class="text-neutral-400 flex-1 min-w-[280px]"><i class="fas fa-circle-info text-orange-400 mr-1"></i> 工作台支持单条填入修复，更支持勾选部分条目或一键全选进行批量自动化历史对齐。</span>
                             <div class="flex gap-2">
                                 <button class="edit-btn edit-btn-save py-1.5 px-3" onclick="executeBatchSuspiciousLookup()"><i class="fas fa-magnifying-glass"></i> 分拣并交叉追溯</button>
-                                <button class="edit-btn edit-btn-add py-1.5 px-3 bg-emerald-600/20 text-emerald-400 border border-emerald-500/30 hover:bg-emerald-600/40" onclick="executeBatchAutoFixSuspicious()"><i class="fas fa-bolt"></i> ⚡ 一键批量自动修复可疑链接</button>
+                                <button class="edit-btn edit-btn-add py-1.5 px-3 bg-emerald-600/20 text-emerald-400 border border-emerald-500/30 hover:bg-emerald-600/40" onclick="executeBatchAutoFixSuspicious()"><i class="fas fa-bolt"></i> ⚡ 批量自动修复选中项</button>
                             </div>
                         </div>
                         <div id="suspiciousPanel"></div>
@@ -465,7 +464,7 @@ function regenerateHtmlAndPanels() {
 function processData() {
     const raw = document.getElementById('rawTextArea').value;
     if (!raw.trim()) {
-        showToast("装载缓冲区空虚，请先复制或传入数据", "warning");
+        showToast("装载区文本流为空，请先复制或传入数据", "warning");
         return;
     }
 
@@ -565,7 +564,7 @@ function processData() {
         document.getElementById("resultSection").scrollIntoView({ behavior: "smooth", block: "start" });
     }, 100);
 
-    showToast("前端核心分析组编排成功，结果已完美无错展开！", "success");
+    showToast("数据重编成功，结果已全量展开！", "success");
 }
 
 /* ========== 差异比对引擎与同名深度清洗拦截 ========== */
@@ -665,7 +664,7 @@ function filterComparisonView() {
     });
 
     rawComparisonCache.onlyInNew.forEach(nb => {
-        const_isTextMatch = !keyword || nb.title.toLowerCase().includes(keyword) || nb.url.toLowerCase().includes(keyword);
+        const isTextMatch = !keyword || nb.title.toLowerCase().includes(keyword) || nb.url.toLowerCase().includes(keyword);
         if (isTextMatch) finalOnlyInNew.push(nb);
     });
 
@@ -677,11 +676,10 @@ function filterComparisonView() {
     renderComparisonHTML(finalMatched, finalOnlyInNew, finalOnlyInOld);
 }
 
-// 渲染对比结果：修正所有大组初始状态，实现默认完全收缩
 function renderComparisonHTML(matched, onlyInNew, onlyInOld) {
     let html = `<div class="scroll-y space-y-4">`;
 
-    // 1. 双向配对面板
+    // 1. 双向配对区
     html += `
         <div class="cmp-group">
             <div class="cmp-hd" onclick="toggleGroup(this)">
@@ -855,7 +853,12 @@ function batch导出为Txt() {
     showToast(`已下载内含 ${targets.length} 条网址的历史书签 TXT 包！`);
 }
 
-/* ========== 可疑链接高级回溯工作台（引入【一键批量修复大招】） ========== */
+/* ========== 可疑链接高级回溯工作台（勾选选择批量修复） ========== */
+function toggleSelectAllSuspicious(master) {
+    const checkboxes = document.querySelectorAll('input[name="suspiciousTraceCheckbox"]');
+    checkboxes.forEach(cb => cb.checked = master.checked);
+}
+
 function renderSuspiciousPanel() {
     const panel = document.getElementById("suspiciousPanel");
     if (suspiciousBookmarks.length === 0) {
@@ -887,24 +890,35 @@ function renderSuspiciousPanel() {
 
     let html = `<div class="scroll-y max-h-[500px] space-y-4">`;
 
-    // 组1：成功追溯项
+    // 组1：成功追溯项（可打勾选择批量自动复活）
     html += `
         <div class="bg-zinc-900/40 border border-zinc-800 p-3 rounded-xl space-y-2">
-            <h4 class="text-xs font-bold text-emerald-400 flex items-center gap-1.5 border-b border-zinc-800 pb-2">
+            <h4 class="text-xs font-bold text-emerald-400 flex items-center gap-1.5 border-b border-zinc-800 pb-2 mb-2">
                 <i class="fas fa-circle-check"></i> 成功追溯关联项 (${traceableList.length}条)
             </h4>
+            ${traceableList.length > 0 ? `
+            <div class="flex items-center justify-between bg-zinc-950/80 p-2.5 rounded-lg border border-zinc-800 text-xs mb-3">
+                <label class="flex items-center gap-2 cursor-pointer select-none text-neutral-400 hover:text-white transition-all">
+                    <input type="checkbox" id="selectAllSuspiciousCheckbox" class="w-3.5 h-3.5 accent-amber-500 cursor-pointer" onchange="toggleSelectAllSuspicious(this)">
+                    <span>全选 / 反选所有可追溯项</span>
+                </label>
+            </div>
+            ` : ''}
     `;
     if (traceableList.length === 0) html += '<p class="text-neutral-600 text-xs py-2 text-center">暂无自动匹配出的关联项，请确保右上方已成功加载旧favorites.html文件</p>';
     traceableList.forEach((trace) => {
         html += `
             <div class="flex flex-wrap items-center justify-between gap-3 bg-zinc-950/40 p-2.5 rounded border border-zinc-800 text-xs">
-                <div class="min-w-0 flex-1">
-                    <span class="text-zinc-400 font-mono">[${trace.item.cat}]</span> <span class="text-zinc-200 font-bold">${escapeHtml(trace.item.originalTitle)}</span>
-                    <div class="mt-1.5 flex items-center gap-2">
-                        <span class="text-[11px] text-emerald-400 font-medium">选定对齐网址:</span>
-                        <select id="sel_url_${trace.item.id}" class="bg-zinc-900 text-zinc-100 border border-zinc-700 rounded px-1.5 py-0.5 text-[11px] max-w-md outline-none">
-                            ${trace.matches.map(m => `<option value="${escapeHtml(m.url)}">${escapeHtml(m.title)} → ${escapeHtml(m.url)} [${Math.round(m.score*100)}%]</option>`).join('')}
-                        </select>
+                <div class="flex items-start gap-3 min-w-0 flex-1">
+                    <input type="checkbox" name="suspiciousTraceCheckbox" data-id="${trace.item.id}" class="w-3.5 h-3.5 accent-amber-500 cursor-pointer mt-0.5">
+                    <div class="min-w-0 flex-1">
+                        <span class="text-zinc-400 font-mono">[${trace.item.cat}]</span> <span class="text-zinc-200 font-bold">${escapeHtml(trace.item.originalTitle)}</span>
+                        <div class="mt-1.5 flex items-center gap-2">
+                            <span class="text-[11px] text-emerald-400 font-medium">选定对齐网址:</span>
+                            <select id="sel_url_${trace.item.id}" class="bg-zinc-900 text-zinc-100 border border-zinc-700 rounded px-1.5 py-0.5 text-[11px] max-w-md outline-none">
+                                ${trace.matches.map(m => `<option value="${escapeHtml(m.url)}">${escapeHtml(m.title)} → ${escapeHtml(m.url)} [${Math.round(m.score*100)}%]</option>`).join('')}
+                            </select>
+                        </div>
                     </div>
                 </div>
                 <button class="edit-btn edit-btn-add whitespace-nowrap" onclick="commitFixSuspiciousLink('${trace.item.id}', 'select')">
@@ -953,15 +967,20 @@ function executeBatchSuspiciousLookup() {
     showToast("交叉回溯对齐跑批完毕！", "success");
 }
 
-// ⚡ 自动扫描所有可疑残缺项，自动复活并同步刷新
+// ⚡ 批量自动修复勾选中的可疑项目
 function executeBatchAutoFixSuspicious() {
-    if(oldBookmarkList.length === 0) return showToast("全自动批量修复失败！请在右上方先导入旧备份 HTML 档案", "error");
-    if(suspiciousBookmarks.length === 0) return showToast("当前无可疑书签需要修复", "warning");
+    if(oldBookmarkList.length === 0) return showToast("批量自动修复失败！请在右上方先导入旧备份 HTML 档案", "error");
+    
+    const checkedBoxes = document.querySelectorAll('input[name="suspiciousTraceCheckbox"]:checked');
+    if(checkedBoxes.length === 0) return showToast("请先勾选需要批量自动修复的可疑书签选项！", "warning");
 
     let fixSuccessCount = 0;
-    const tempSuspicious = [...suspiciousBookmarks];
 
-    tempSuspicious.forEach(sb => {
+    checkedBoxes.forEach(cb => {
+        const uid = cb.dataset.id;
+        const sb = suspiciousBookmarks.find(b => b.id === uid);
+        if(!sb) return;
+
         const coreName = cleanCoreName(sb.originalTitle);
         if(!coreName) return;
 
@@ -975,7 +994,7 @@ function executeBatchAutoFixSuspicious() {
             matches.sort((a, b) => b.score - a.score);
             const bestUrl = matches[0].url;
 
-            const target = processedBookmarks.find(b => b.id === sb.id);
+            const target = processedBookmarks.find(b => b.id === uid);
             if (target) {
                 target.url = bestUrl;
                 target.title = target.title.replace(/\[可疑链接已删除\]/g, "").trim();
@@ -990,9 +1009,9 @@ function executeBatchAutoFixSuspicious() {
         suspiciousBookmarks = processedBookmarks.filter(b => b.isSuspicious);
         regenerateHtmlAndPanels();
         runOptimizedComparison();
-        showToast(`⚡ 一键批量自动修复了 ${fixSuccessCount} 个残缺断链！比对视图已刷新。`, "success");
+        showToast(`⚡ 批量修复成功！已自动帮您复活了选中的 ${fixSuccessCount} 个条目，比对视图已全量刷新。`, "success");
     } else {
-        showToast("未能检测出具有高确信度的历史备份，建议人工补齐。", "warning");
+        showToast("选中的条目未能匹配到历史网址，请尝试单条人工填入。", "warning");
         renderSuspiciousPanel();
     }
 }
@@ -1155,7 +1174,7 @@ async function startDeadLinkCheck() {
     const barFill = document.getElementById("progressBarFill");
     
     btn.disabled = true; progressText.classList.remove("hidden"); barContainer.classList.remove("hidden");
-    document.getElementById("deadlinksListPanel").innerHTML = '<div class="empty text-sky-400"><i class="fas fa-circle-notch fa-spin"></i><p>连通性多路复用轻量探测探针加载中...</p></div>';
+    document.getElementById("deadlinksListPanel").innerHTML = '<div class="empty text-sky-400"><i class="fas fa-circle-notch fa-spin"></i><p>连通性探测嗅探处理中...</p></div>';
     
     deadBookmarks = [];
     let total = processedBookmarks.length, checkedCount = 0, batchSize = 10;
@@ -1174,7 +1193,7 @@ async function startDeadLinkCheck() {
                 clearTimeout(timeoutId); checkedCount++;
                 let pct = Math.round((checkedCount / total) * 100);
                 barFill.style.width = pct + "%";
-                progressText.textContent = `探测进度: ${checkedCount}/${total} (${pct}%) - 已抓获死链: ${deadBookmarks.length}`;
+                progressText.textContent = `嗅探进度: ${checkedCount}/${total} (${pct}%) - 已抓获死链: ${deadBookmarks.length}`;
             }
         }));
     }
@@ -1184,7 +1203,7 @@ async function startDeadLinkCheck() {
 }
 
 function deleteFromActiveBookmarks(url) {
-    if (!confirm("确定要将此故障死链从合并集合中彻底删除移除吗？")) return;
+    if (!confirm("确定要将此网络超时/故障的僵尸节点从合并集合中彻底删除移除吗？")) return;
     processedBookmarks = processedBookmarks.filter(b => b.url !== url);
     deadBookmarks = deadBookmarks.filter(b => b.url !== url);
     suspiciousBookmarks = suspiciousBookmarks.filter(b => b.url !== url);
@@ -1209,54 +1228,39 @@ function renderDeadlinksView() {
     }
 }
 
-function renderStats(total, dupCount, catCount, suspiciousCount) {
-    document.getElementById("statsPanel").innerHTML = `
-        <div class="stat-grid">
-            <div class="stat-card"><div class="stat-val text-green-400">${total}</div><div class="stat-lbl">有效合并总数</div></div>
-            <div class="stat-card"><div class="stat-val text-rose-400">${dupCount}</div><div class="stat-lbl">去重滤除</div></div>
-            <div class="stat-card"><div class="stat-val text-amber-400">${catCount}</div><div class="stat-lbl">智能群组</div></div>
-            <div class="stat-card"><div class="stat-val text-orange-400">${suspiciousCount}</div><div class="stat-lbl">可疑空标志点</div></div>
-        </div>
-    `;
-}
-
-function renderDuplicates() {
-    const panel = document.getElementById("duplicatesPanel");
-    if (duplicateList.length === 0) {
-        panel.innerHTML = '<div class="empty"><i class="fas fa-check-circle"></i><p>没有检出多余的冗余重复网址</p></div>'; return;
-    }
-    let html = '<div class="mb-3 text-xs text-zinc-400"><i class="fas fa-info-circle mr-1 text-amber-400"></i>为了体积瘦身，以下重复网址仅保留最先出现的记录：</div><div class="scroll-y">';
-    duplicateList.forEach((d, i) => {
-        html += `<div class="list-row"><span class="text-zinc-600 text-xs min-w-[24px]">${i+1}</span><span class="list-url">${escapeHtml(d.url)}</span></div>`;
-    });
-    panel.innerHTML = html + '</div>';
-}
-
-function renderCompareEmpty() {
-    document.getElementById("comparePanel").innerHTML = '<div class="empty"><i class="fas fa-folder-tree"></i><p>请在上方装载区上传 .html 旧备份书签文件以激活差异交叉比对视图</p></div>';
-    document.getElementById("cmpBadge").classList.add("hidden");
-}
-
-// 修改后的平滑折叠展开交互函数
+// 优化后的精准弹性显隐机制
 function toggleGroup(hd) {
     hd.classList.toggle("open"); 
     const body = hd.nextElementSibling; 
-    body.classList.toggle("open");
+    if (body) {
+        body.classList.toggle("open");
+    }
 }
 
+/* ========== 全局增量多维切换控制底座 ========== */
 function switchTab(name) {
+    // 1. 物理顶端高亮切换
     document.querySelectorAll(".tab-bar .tab-btn").forEach(b => {
         if(b.getAttribute('data-tab') === name) b.classList.add("active");
-        else b.remove("active");
+        else b.classList.remove("active");
     });
-    const contentPanels = document.querySelectorAll("#resultSection > .card > .tab-content");
-    contentPanels.forEach(c => {
-        if(c.id === "tab" + name.charAt(0).toUpperCase() + name.slice(1)) c.classList.add("active");
-        else c.classList.remove("active");
+    
+    // 2. 局部视图无感安全切换（深度修正 GitHub 跨域沙箱可见性逻辑 Bug）
+    const tabs = ['preview', 'duplicates', 'compare', 'suspicious', 'deadlinks'];
+    tabs.forEach(t => {
+        const panel = document.getElementById('tab' + t.charAt(0).toUpperCase() + t.slice(1));
+        if (panel) {
+            if (t === name) {
+                panel.style.display = 'block';
+                panel.classList.add('active');
+            } else {
+                panel.style.display = 'none';
+                panel.classList.remove('active');
+            }
+        }
     });
 }
 
-/* ========== 文件上传链路监听接驳机制（强绑定抗错重构） ========== */
 function bindFileUploadEvents() {
     const srcZone = document.getElementById("srcDropZone");
     const srcInput = document.getElementById("txtFileInput");
@@ -1298,7 +1302,7 @@ function executeReadTextStream(file, type) {
             oldBookmarkList = parseBookmarkHtml(e.target.result);
             document.getElementById('oldDropZone').classList.add('has-file');
             document.getElementById('oldFileLabel').innerHTML = `<span class="text-green-400 font-bold"><i class="fas fa-check-circle"></i> 已载入：${file.name} (${oldBookmarkList.length}条)</span>`;
-            showToast(`历史备份旧库解析成功： ${oldBookmarkList.length}条`);
+            showToast(`成功解析关联比对旧库数据： ${oldBookmarkList.length}条`);
             if (processedBookmarks.length > 0) runOptimizedComparison();
         }
     };
@@ -1306,7 +1310,7 @@ function executeReadTextStream(file, type) {
 }
 
 function downloadResult() {
-    if (processedBookmarks.length === 0) return showToast("缓冲区空虚，请先执行修复并预览", "warning");
+    if (processedBookmarks.length === 0) return showToast("缓冲区空虚，请先执行导入与预览机制", "warning");
     const tree = {};
     processedBookmarks.forEach(b => {
         if(!tree[b.cat]) tree[b.cat] = {};
