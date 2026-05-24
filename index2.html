@@ -233,6 +233,7 @@
         console.log('书签工具已启动');
 
         // 全局状态
+        let deadlinkWhitelist = [];
         let finalHtml = "";
         let processedBookmarks = [];
         let duplicateList = [];
@@ -466,7 +467,11 @@
         async function startDeadLinkCheck(){
             if(!processedBookmarks.length)return showToast("没有书签可检测","warning"); const btn=document.getElementById("startCheckDeadBtn");btn.disabled=true;document.getElementById("checkProgressText").classList.remove("hidden");document.getElementById("progressBarContainer").classList.remove("hidden");document.getElementById("deadlinksListPanel").innerHTML='<div class="empty"><i class="fas fa-circle-notch fa-spin"></i>检测中...</div>';
             deadBookmarks=[]; let checked=0; const total=processedBookmarks.length,start=Date.now();
-            for(let i=0;i<total;i+=8){ const batch=processedBookmarks.slice(i,i+8); await Promise.all(batch.map(async bm=>{ if(bm.url.startsWith('about:blank')){checked++;return;} const ctrl=new AbortController();const timer=setTimeout(()=>ctrl.abort(),5000); try{ const res=await fetch(bm.url,{mode:'cors',signal:ctrl.signal}); if(!res.ok&&res.status!==0)deadBookmarks.push(bm); }catch(e){ if(e.name==='AbortError')deadBookmarks.push(bm); else if(e.message?.includes('Failed to fetch')&&!e.message.includes('CORS')){ try{ const c2=new AbortController();const t2=setTimeout(()=>c2.abort(),3000); await fetch(bm.url,{mode:'no-cors',signal:c2.signal});clearTimeout(t2); }catch{deadBookmarks.push(bm);} } } finally{clearTimeout(timer);checked++;} })); const elapsed=(Date.now()-start)/1000;const speed=checked/elapsed;const remain=Math.ceil((total-checked)/speed); document.getElementById("progressBarFill").style.width=(checked/total*100)+"%"; document.getElementById("checkProgressText").textContent=`进度 ${checked}/${total}，预计剩余 ${remain} 秒`; }
+            for(let i=0;i<total;i+=8){ const batch=processedBookmarks.slice(i,i+8); await Promise.all(batch.map(async bm=>{ if(bm.url.startsWith('about:blank')){checked++;return;} 
+            if (deadlinkWhitelist.some(w => normalizeUrl(w) === normalizeUrl(bm.url))) {
+                checked++;
+                return; // 跳过白名单链接
+            } const ctrl=new AbortController();const timer=setTimeout(()=>ctrl.abort(),5000); try{ const res=await fetch(bm.url,{mode:'cors',signal:ctrl.signal}); if(!res.ok&&res.status!==0)deadBookmarks.push(bm); }catch(e){ if(e.name==='AbortError')deadBookmarks.push(bm); else if(e.message?.includes('Failed to fetch')&&!e.message.includes('CORS')){ try{ const c2=new AbortController();const t2=setTimeout(()=>c2.abort(),3000); await fetch(bm.url,{mode:'no-cors',signal:c2.signal});clearTimeout(t2); }catch{deadBookmarks.push(bm);} } } finally{clearTimeout(timer);checked++;} })); const elapsed=(Date.now()-start)/1000;const speed=checked/elapsed;const remain=Math.ceil((total-checked)/speed); document.getElementById("progressBarFill").style.width=(checked/total*100)+"%"; document.getElementById("checkProgressText").textContent=`进度 ${checked}/${total}，预计剩余 ${remain} 秒`; }
             document.getElementById("checkProgressText").textContent=`完成，发现 ${deadBookmarks.length} 个死链`; btn.disabled=false;btn.textContent="重新检测"; renderDeadlinksView();
         }
         function deleteFromActiveBookmarks(url){ showModal('确认删除','确定要删除该链接吗？',[{text:'取消',value:false,cls:'modal-btn-cancel'},{text:'删除',value:true,cls:'modal-btn-confirm'}]).then(ok=>{if(ok){ const bm=processedBookmarks.find(b=>b.url===url); if(bm){ processedBookmarks=processedBookmarks.filter(b=>b.url!==url); deletedBookmarks.push(bm); deadBookmarks=deadBookmarks.filter(b=>b.url!==url); suspiciousBookmarks=suspiciousBookmarks.filter(b=>b.url!==url); regenerateHtmlAndPanels();renderDeadlinksView();renderTrashPanel();if(oldBookmarkList.length)runOptimizedComparison();showToast("已移入回收站","success"); } }}); }
@@ -483,7 +488,7 @@
 
     let html = '';
     // 操作栏
-    html += '<div class="flex items-center justify-between bg-zinc-950/80 p-2.5 rounded-lg border border-zinc-800 text-xs mb-3">';
+    html += '<div class="sticky top-0 z-10 bg-zinc-900/95 backdrop-blur-sm border-b border-zinc-700 p-3 flex flex-wrap items-center justify-between gap-2 rounded-t-lg mb-3">';
     html += '<label class="flex items-center gap-2 cursor-pointer text-neutral-400 hover:text-white">';
     html += '<input type="checkbox" id="selectAllDeadlinksCheckbox" class="w-3.5 h-3.5 accent-amber-500 cursor-pointer" onchange="toggleSelectAllDeadlinks(this)">';
     html += '<span>全选 / 反选全部</span>';
@@ -491,6 +496,7 @@
     html += '<div class="flex gap-2">';
     html += '<button class="edit-btn edit-btn-save py-1.5 px-3" onclick="openSelectedDeadlinks()"><i class="fas fa-external-link-alt"></i> 打开选中链接</button>';
     html += '<button class="edit-btn edit-btn-remove py-1.5 px-3" onclick="batchDeleteDeadlinks()"><i class="fas fa-trash-can"></i> 批量删除选中</button>';
+    html += '<button class="edit-btn edit-btn-add py-1.5 px-3" onclick="batchAddToWhitelist()"><i class="fas fa-shield"></i> 批量加白</button>';
     html += '</div>';
     html += '</div>';  // 操作栏结束
 
@@ -506,11 +512,72 @@
         html += '<span class="text-zinc-600 w-6">' + (idx + 1) + '</span>';
         html += '<div class="flex-1"><div class="font-bold text-xs">' + escapeHtml(db.title) + (isHttp ? ' <span class="bm-tag-http">⚠️ HTTP</span>' : '') + '</div>';
         html += '<span class="list-url text-rose-400">' + escapeHtml(db.url) + '</span></div>';
+        html += '<button class="edit-btn edit-btn-add mr-2" data-url="' + escapeHtml(db.url) + '" onclick="addToWhitelist(this.dataset.url)"><i class="fas fa-shield-haltered"></i> 加白</button>';
         html += '<button class="edit-btn edit-btn-remove" data-url="' + escapeHtml(db.url) + '" onclick="deleteFromActiveBookmarks(this.dataset.url)">删除</button>';
         html += '</div>';
     });
+    html += `
+<div class="mt-4 border border-zinc-700 rounded-lg overflow-hidden">
+    <div class="bg-zinc-800 px-4 py-2 cursor-pointer flex justify-between items-center" onclick="this.nextElementSibling.classList.toggle('hidden')">
+        <span class="text-xs font-bold text-zinc-300"><i class="fas fa-shield"></i> 白名单管理 (${deadlinkWhitelist.length})</span>
+        <i class="fas fa-chevron-down text-xs text-zinc-500"></i>
+    </div>
+    <div class="bg-zinc-900/60 p-3 hidden max-h-60 overflow-y-auto">
+        ${deadlinkWhitelist.length === 0 ? '<p class="text-zinc-500 text-xs">白名单为空</p>' : deadlinkWhitelist.map((url, i) => `
+            <div class="flex justify-between items-center text-xs py-1 border-b border-zinc-800/50 last:border-0">
+                <span class="text-zinc-400 truncate font-mono">${escapeHtml(url)}</span>
+                <button class="edit-btn edit-btn-remove text-[10px] px-2 py-0.5" onclick="removeFromWhitelist(${i})"><i class="fas fa-trash"></i></button>
+            </div>
+        `).join('')}
+    </div>
+</div>`;
 
     panel.innerHTML = html;
+}
+// 单条加入白名单
+function addToWhitelist(url) {
+    if (!url) return;
+    const norm = normalizeUrl(url);
+    if (deadlinkWhitelist.some(w => normalizeUrl(w) === norm)) {
+        showToast("该链接已在白名单中", "info");
+        return;
+    }
+    deadlinkWhitelist.push(url);
+    // 从死链列表中移除
+    deadBookmarks = deadBookmarks.filter(db => normalizeUrl(db.url) !== norm);
+    renderDeadlinksView();
+    showToast("已加入白名单，下次检测将跳过", "success");
+}
+
+// 批量加入白名单
+function batchAddToWhitelist() {
+    const checked = document.querySelectorAll('input[name="deadlinkCheckbox"]:checked');
+    if (checked.length === 0) {
+        showToast("请至少选择一个死链", "warning");
+        return;
+    }
+    let addedCount = 0;
+    checked.forEach(cb => {
+        const url = cb.dataset.url;
+        if (url && !deadlinkWhitelist.some(w => normalizeUrl(w) === normalizeUrl(url))) {
+            deadlinkWhitelist.push(url);
+            addedCount++;
+        }
+    });
+    // 从死链列表中移除所有已加白的
+    const normSet = new Set(deadlinkWhitelist.map(w => normalizeUrl(w)));
+    deadBookmarks = deadBookmarks.filter(db => !normSet.has(normalizeUrl(db.url)));
+    renderDeadlinksView();
+    showToast(`已将 ${addedCount} 个链接加入白名单`, "success");
+}
+
+// 从白名单移除
+function removeFromWhitelist(index) {
+    if (index >= 0 && index < deadlinkWhitelist.length) {
+        deadlinkWhitelist.splice(index, 1);
+        renderDeadlinksView();
+        showToast("已从白名单移除", "success");
+    }
 }
 
         // 全选/反选死链复选框
