@@ -489,7 +489,7 @@
     html += '<span>全选 / 反选全部</span>';
     html += '</label>';
     html += '<div class="flex gap-2">';
-    html += '<button class="edit-btn edit-btn-save py-1.5 px-3" onclick="openAllDeadlinks()"><i class="fas fa-external-link-alt"></i> 一键打开全部</button>';
+    html += '<button class="edit-btn edit-btn-save py-1.5 px-3" onclick="openSelectedDeadlinks()"><i class="fas fa-external-link-alt"></i> 打开选中链接</button>';
     html += '<button class="edit-btn edit-btn-remove py-1.5 px-3" onclick="batchDeleteDeadlinks()"><i class="fas fa-trash-can"></i> 批量删除选中</button>';
     html += '</div>';
     html += '</div>';  // 操作栏结束
@@ -520,13 +520,29 @@ function toggleSelectAllDeadlinks(master) {
 }
 
 // 一键打开所有死链（跳过 about:blank 链接）
-function openAllDeadlinks() {
-    const urls = deadBookmarks.map(db => db.url).filter(u => !u.startsWith('about:blank'));
-    if (urls.length === 0) {
-        showToast("没有可打开的链接", "warning");
+// 打开选中的死链（逐个延迟，防止弹窗拦截）
+function openSelectedDeadlinks() {
+    const checkedBoxes = document.querySelectorAll('input[name="deadlinkCheckbox"]:checked');
+    if (checkedBoxes.length === 0) {
+        showToast("请至少勾选一个死链", "warning");
         return;
     }
-    showToast(`正在尝试依次打开 ${urls.length} 个链接，若被阻止请允许弹窗`, "info");
+
+    // 提取勾选的 URL
+    const urls = [];
+    checkedBoxes.forEach(cb => {
+        const url = cb.dataset.url;
+        if (url && !url.startsWith('about:blank')) {
+            urls.push(url);
+        }
+    });
+
+    if (urls.length === 0) {
+        showToast("选中的链接均为占位符，无法打开", "warning");
+        return;
+    }
+
+    showToast(`正在尝试依次打开 ${urls.length} 个链接，若被拦截请允许弹窗`, "info");
 
     let openedCount = 0;
     urls.forEach((url, idx) => {
