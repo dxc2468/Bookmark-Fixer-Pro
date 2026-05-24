@@ -1,4 +1,4 @@
-# 📂 书签终极修复与智能工具 Pro (Bookmark Fixer Pro)
+# 📂 书签修复与智能工具 Pro (Bookmark Fixer Pro)
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Platform: Web](https://img.shields.io/badge/Platform-Web-blue.svg)]()
